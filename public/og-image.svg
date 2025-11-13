@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22D3EE" />
+      <stop offset="100%" stop-color="#2563EB" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#0f172a" />
+  <circle cx="1000" cy="120" r="160" fill="url(#grad)" opacity="0.15" />
+  <text x="120" y="220" fill="#93c5fd" font-family="Inter, 'Segoe UI', sans-serif" font-size="36" letter-spacing="0.4em">WAVEHUB.AI</text>
+  <text x="120" y="320" fill="#fff" font-family="Inter, 'Segoe UI', sans-serif" font-size="72" font-weight="700">Education Edition</text>
+  <text x="120" y="400" fill="#cbd5f5" font-family="Inter, 'Segoe UI', sans-serif" font-size="32">
+    Real-time voice learning. AI translation + lecture notes.
+  </text>
+  <path d="M120 460 C 220 420, 320 500, 420 460 S 620 420, 720 460 S 920 510, 1020 470" stroke="url(#grad)" stroke-width="8" fill="none" stroke-linecap="round" />
+</svg>
