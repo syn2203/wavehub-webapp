@@ -41,12 +41,15 @@ export async function POST(request: NextRequest) {
     // 生成 JWT token
     const token = await at.toJwt()
 
-    return NextResponse.json({
+    const roomInfo = {
       token,
       url: LIVEKIT_CONFIG.url,
       roomName,
       participantName
-    })
+    }
+
+    console.log('Generated LiveKit token:', participantName, roomInfo)
+    return NextResponse.json(roomInfo)
   } catch (error: any) {
     console.error('Error generating LiveKit token:', error)
     return NextResponse.json(
