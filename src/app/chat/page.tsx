@@ -4,6 +4,8 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import ChatCryptoWidget from '@/components/ChatCryptoWidget';
 import ShareModal from '@/components/ShareModal';
+import VoiceRoom from '@/components/VoiceRoom';
+import { generateRoomName } from '@/lib/livekit';
 
 interface ChatMessage {
   id: string;
@@ -117,11 +119,15 @@ export default function ChatPage() {
   const [isListening, setIsListening] = useState(false);
   const [isCryptoMinimized, setIsCryptoMinimized] = useState(true);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [showVoiceRoom, setShowVoiceRoom] = useState(false);
   const [currentUser] = useState({
     id: 'current',
     name: '我',
     avatar: '😊'
   });
+
+  // 生成语音房间名称
+  const voiceRoomName = generateRoomName(urlParams.section, urlParams.category);
 
   // 根据URL参数生成聊天室信息
   const getRoomInfo = () => {
@@ -322,6 +328,20 @@ export default function ChatPage() {
               <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
               <span>{users.filter(u => u.status === 'online').length} 人在线</span>
             </div>
+            {/* 语音房间按钮 */}
+            <button
+              onClick={() => setShowVoiceRoom(!showVoiceRoom)}
+              className={`flex items-center space-x-2 px-4 py-2 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 ${
+                showVoiceRoom
+                  ? 'bg-gradient-to-r from-green-500 to-emerald-600 text-white'
+                  : 'bg-gradient-to-r from-purple-500 to-pink-600 text-white hover:from-purple-600 hover:to-pink-700'
+              }`}
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3.53-2.64 6.4-6.3 6.92V21h-2v-3.08C6.34 17.4 3.7 14.53 3.7 11H2c0 3.98 3.15 7.22 7 7.68V21h6v-2.32c3.85-.46 7-3.7 7-7.68h-1.7z" />
+              </svg>
+              <span className="font-medium">{showVoiceRoom ? '关闭语音房' : '打开语音房'}</span>
+            </button>
             {/* 分享按钮 */}
             <button
               onClick={() => setIsShareModalOpen(true)}
@@ -342,6 +362,17 @@ export default function ChatPage() {
             onToggle={() => setIsCryptoMinimized(!isCryptoMinimized)}
           />
         </div>
+
+        {/* 语音房间区域 */}
+        {showVoiceRoom && (
+          <div className="mb-6 animate-scale-in">
+            <VoiceRoom
+              roomName={voiceRoomName}
+              participantName={currentUser.name}
+              onDisconnect={() => setShowVoiceRoom(false)}
+            />
+          </div>
+        )}
 
         {/* 主要内容区域 */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">

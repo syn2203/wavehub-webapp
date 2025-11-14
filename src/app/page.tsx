@@ -269,42 +269,45 @@ export default function HomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
-      {/* 头部 */}
-      <header className="bg-white/80 backdrop-blur-sm border-b border-white/20 sticky top-0 z-40">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
-                <Globe className="w-6 h-6 text-white" />
+    <div className="relative min-h-screen overflow-hidden text-slate-100">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.2),_transparent_55%)] opacity-70" />
+      <div className="pointer-events-none absolute inset-y-0 right-[-10%] w-1/2 bg-gradient-to-bl from-cyan-500/20 via-transparent to-fuchsia-500/20 blur-3xl" />
+      <div className="relative z-10 min-h-screen">
+        {/* 头部 */}
+        <header className="bg-white/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-40">
+          <div className="container mx-auto px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center">
+                  <Globe className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                    WaveHub
+                  </h1>
+                  <p className="text-sm text-gray-600">AI驱动的实时语音协作平台</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  WaveHub
-                </h1>
-                <p className="text-sm text-gray-600">AI驱动的实时语音协作平台</p>
-              </div>
+              <nav className="flex items-center space-x-6">
+                <Link href="/chat" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  实时聊天
+                </Link>
+                <Link href="/analysis" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  市场分析
+                </Link>
+                <Link href="/portfolio" className="text-gray-600 hover:text-blue-600 transition-colors">
+                  投资组合
+                </Link>
+                <button className="btn-primary px-6 py-2">
+                  登录
+                </button>
+              </nav>
             </div>
-            <nav className="flex items-center space-x-6">
-              <Link href="/chat" className="text-gray-600 hover:text-blue-600 transition-colors">
-                实时聊天
-              </Link>
-              <Link href="/analysis" className="text-gray-600 hover:text-blue-600 transition-colors">
-                市场分析
-              </Link>
-              <Link href="/portfolio" className="text-gray-600 hover:text-blue-600 transition-colors">
-                投资组合
-              </Link>
-              <button className="btn-primary px-6 py-2">
-                登录
-              </button>
-            </nav>
           </div>
-        </div>
-      </header>
+        </header>
 
-      {/* 主要内容 */}
-      <main className="container mx-auto px-6 py-12">
+        {/* 主要内容 */}
+        <main className="container mx-auto px-6 py-12">
         {/* 欢迎区域 */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
@@ -402,54 +405,55 @@ export default function HomePage() {
             </Link>
           </div>
         </div>
-      </main>
+        </main>
 
-      {/* 页脚 */}
-      <footer className="bg-white/80 backdrop-blur-sm border-t border-white/20 mt-20">
-        <div className="container mx-auto px-6 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="flex items-center space-x-2 mb-4">
-                <Globe className="w-6 h-6 text-blue-500" />
-                <span className="text-xl font-bold text-gray-900">WaveHub</span>
+        {/* 页脚 */}
+        <footer className="bg-white/80 backdrop-blur-xl border-t border-white/10 mt-20">
+          <div className="container mx-auto px-6 py-12">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+              <div>
+                <div className="flex items-center space-x-2 mb-4">
+                  <Globe className="w-6 h-6 text-blue-500" />
+                  <span className="text-xl font-bold text-gray-900">WaveHub</span>
+                </div>
+                <p className="text-gray-600 text-sm">
+                  由AI驱动的实时语音协作平台，连接全球用户，提供高质量的语音通信体验。
+                </p>
               </div>
-              <p className="text-gray-600 text-sm">
-                由AI驱动的实时语音协作平台，连接全球用户，提供高质量的语音通信体验。
-              </p>
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-4">语音功能</h4>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li><Link href="/meetings" className="hover:text-blue-600">语音会议</Link></li>
+                  <li><Link href="/collaboration" className="hover:text-blue-600">团队协作</Link></li>
+                  <li><Link href="/recording" className="hover:text-blue-600">通话录音</Link></li>
+                  <li><Link href="/transcription" className="hover:text-blue-600">实时转录</Link></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-4">AI技术</h4>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li><Link href="/noise-reduction" className="hover:text-blue-600">智能降噪</Link></li>
+                  <li><Link href="/translation" className="hover:text-blue-600">实时翻译</Link></li>
+                  <li><Link href="/voice-synthesis" className="hover:text-blue-600">语音合成</Link></li>
+                  <li><Link href="/emotion-detection" className="hover:text-blue-600">情感识别</Link></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-gray-900 mb-4">社区</h4>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li><Link href="/community" className="hover:text-blue-600">用户社区</Link></li>
+                  <li><Link href="/chat" className="hover:text-blue-600">语音聊天</Link></li>
+                  <li><Link href="/feedback" className="hover:text-blue-600">产品反馈</Link></li>
+                  <li><Link href="/support" className="hover:text-blue-600">技术支持</Link></li>
+                </ul>
+              </div>
             </div>
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-4">语音功能</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li><Link href="/meetings" className="hover:text-blue-600">语音会议</Link></li>
-                <li><Link href="/collaboration" className="hover:text-blue-600">团队协作</Link></li>
-                <li><Link href="/recording" className="hover:text-blue-600">通话录音</Link></li>
-                <li><Link href="/transcription" className="hover:text-blue-600">实时转录</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-4">AI技术</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li><Link href="/noise-reduction" className="hover:text-blue-600">智能降噪</Link></li>
-                <li><Link href="/translation" className="hover:text-blue-600">实时翻译</Link></li>
-                <li><Link href="/voice-synthesis" className="hover:text-blue-600">语音合成</Link></li>
-                <li><Link href="/emotion-detection" className="hover:text-blue-600">情感识别</Link></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold text-gray-900 mb-4">社区</h4>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li><Link href="/community" className="hover:text-blue-600">用户社区</Link></li>
-                <li><Link href="/chat" className="hover:text-blue-600">语音聊天</Link></li>
-                <li><Link href="/feedback" className="hover:text-blue-600">产品反馈</Link></li>
-                <li><Link href="/support" className="hover:text-blue-600">技术支持</Link></li>
-              </ul>
+            <div className="border-t border-gray-200 mt-8 pt-8 text-center text-sm text-gray-600">
+              <p>&copy; 2024 WaveHub. 保留所有权利。</p>
             </div>
           </div>
-          <div className="border-t border-gray-200 mt-8 pt-8 text-center text-sm text-gray-600">
-            <p>&copy; 2024 WaveHub. 保留所有权利。</p>
-          </div>
-        </div>
-      </footer>
+        </footer>
+      </div>
     </div>
   );
 }
