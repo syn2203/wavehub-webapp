@@ -1,0 +1,213 @@
+'use client'
+
+import { useState, useEffect, useCallback } from 'react'
+import { LiveKitRoom, VideoConference, RoomAudioRenderer } from '@livekit/components-react'
+import '@livekit/components-styles'
+import { Mic, MicOff, Video, VideoOff, PhoneOff, Settings, Users } from 'lucide-react'
+
+interface MeetRoomProps {
+  roomName: string
+  participantName: string
+  onDisconnect?: () => void
+  enableVideo?: boolean
+}
+
+export default function MeetRoom({
+  roomName,
+  participantName,
+  onDisconnect,
+  enableVideo = true
+}: MeetRoomProps) {
+  const [token, setToken] = useState<string | null>(null)
+  const [serverUrl, setServerUrl] = useState<string>('')
+  const [isConnecting, setIsConnecting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [isVideoEnabled, setIsVideoEnabled] = useState(enableVideo)
+  const [isAudioEnabled, setIsAudioEnabled] = useState(true)
+
+  // 获取 LiveKit 配置和访问令牌
+  useEffect(() => {
+    // 获取访问令牌（API 会返回 token 和 url）
+    const fetchToken = async () => {
+      setIsConnecting(true)
+      setError(null)
+
+      try {
+        const response = await fetch('/api/livekit/token', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            roomName,
+            participantName,
+            participantMetadata: {
+              avatar: '😊',
+              joinedAt: new Date().toISOString()
+            }
+          })
+        })
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}))
+          throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`)
+        }
+
+        const data = await response.json()
+        
+        // 从 API 响应中获取 URL 和 token
+        if (!data.url) {
+          throw new Error('服务器未返回 LiveKit URL，请检查服务端配置')
+        }
+        
+        if (!data.token) {
+          throw new Error('服务器未返回访问令牌')
+        }
+
+        setServerUrl(data.url)
+        setToken(data.token)
+        console.log('LiveKit 配置已获取:', { url: data.url, roomName: data.roomName })
+      } catch (err: any) {
+        console.error('Failed to fetch token:', err)
+        setError(err.message || '获取访问令牌失败，请检查网络连接和服务端配置')
+      } finally {
+        setIsConnecting(false)
+      }
+    }
+
+    fetchToken()
+  }, [roomName, participantName])
+
+  const handleDisconnect = useCallback(() => {
+    setToken(null)
+    if (onDisconnect) {
+      onDisconnect()
+    }
+  }, [onDisconnect])
+
+  if (error) {
+    return (
+      <div className='bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-700 p-6'>
+        <div className='flex items-center space-x-3 text-red-400 mb-4'>
+          <Settings className='w-6 h-6' />
+          <h3 className='text-xl font-bold'>连接错误</h3>
+        </div>
+        <p className='text-gray-300 mb-4'>{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors'
+        >
+          重新加载
+        </button>
+      </div>
+    )
+  }
+
+  if (isConnecting || !token || !serverUrl) {
+    return (
+      <div className='bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-700 p-6'>
+        <div className='flex items-center justify-center space-x-3 text-blue-400'>
+          <div className='animate-spin rounded-full h-8 w-8 border-b-2 border-blue-400'></div>
+          <span className='text-lg'>正在连接房间...</span>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className='h-full w-full bg-gray-900 rounded-2xl overflow-hidden shadow-xl border border-gray-700'>
+      <LiveKitRoom
+        video={isVideoEnabled}
+        audio={isAudioEnabled}
+        token={token}
+        serverUrl={serverUrl}
+        data-lk-theme='default'
+        className='h-full w-full'
+        onDisconnected={handleDisconnect}
+        options={{
+          adaptiveStream: true,
+          dynacast: true
+        }}
+      >
+        <div className='flex flex-col h-full w-full'>
+          {/* 顶部工具栏 */}
+          <div className='flex items-center justify-between p-4 bg-gray-800/50 border-b border-gray-700 z-10'>
+            <div className='flex items-center space-x-3'>
+              <Users className='w-5 h-5 text-blue-400' />
+              <h3 className='text-lg font-bold text-white'>{roomName}</h3>
+            </div>
+            <RoomControls
+              onVideoToggle={() => setIsVideoEnabled(!isVideoEnabled)}
+              onAudioToggle={() => setIsAudioEnabled(!isAudioEnabled)}
+              isVideoEnabled={isVideoEnabled}
+              isAudioEnabled={isAudioEnabled}
+              onDisconnect={handleDisconnect}
+            />
+          </div>
+
+          {/* 视频会议区域 */}
+          <div className='flex-1 overflow-hidden relative'>
+            <VideoConference />
+          </div>
+
+          {/* 音频渲染器 */}
+          <RoomAudioRenderer />
+        </div>
+      </LiveKitRoom>
+    </div>
+  )
+}
+
+// 房间控制组件
+function RoomControls({
+  onVideoToggle,
+  onAudioToggle,
+  isVideoEnabled,
+  isAudioEnabled,
+  onDisconnect
+}: {
+  onVideoToggle: () => void
+  onAudioToggle: () => void
+  isVideoEnabled: boolean
+  isAudioEnabled: boolean
+  onDisconnect: () => void
+}) {
+  return (
+    <div className='flex items-center space-x-2'>
+      {/* 视频切换按钮 */}
+      <button
+        onClick={onVideoToggle}
+        className={`p-3 rounded-full transition-all ${
+          isVideoEnabled
+            ? 'bg-blue-600 text-white hover:bg-blue-700'
+            : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+        }`}
+        title={isVideoEnabled ? '关闭摄像头' : '打开摄像头'}
+      >
+        {isVideoEnabled ? <Video className='w-5 h-5' /> : <VideoOff className='w-5 h-5' />}
+      </button>
+
+      {/* 音频切换按钮 */}
+      <button
+        onClick={onAudioToggle}
+        className={`p-3 rounded-full transition-all ${
+          isAudioEnabled
+            ? 'bg-blue-600 text-white hover:bg-blue-700'
+            : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+        }`}
+        title={isAudioEnabled ? '关闭麦克风' : '打开麦克风'}
+      >
+        {isAudioEnabled ? <Mic className='w-5 h-5' /> : <MicOff className='w-5 h-5' />}
+      </button>
+
+      {/* 断开连接按钮 */}
+      <button
+        onClick={onDisconnect}
+        className='p-3 rounded-full bg-red-600 text-white hover:bg-red-700 transition-all'
+        title='离开房间'
+      >
+        <PhoneOff className='w-5 h-5' />
+      </button>
+    </div>
+  )
+}

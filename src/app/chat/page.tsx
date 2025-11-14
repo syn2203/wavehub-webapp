@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import VoiceRoom from '@/components/VoiceRoom'
+import MeetRoom from '@/components/MeetRoom'
 import { generateRoomName } from '@/lib/livekit'
 
 export default function ChatPage() {
@@ -68,6 +69,13 @@ export default function ChatPage() {
   }
 
   const roomInfo = getRoomInfo()
+  const [roomMode, setRoomMode] = useState<'voice' | 'video'>('video')
+  const [currentUserName] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return Math.random().toString(36).substring(2, 11)
+    }
+    return 'user'
+  })
 
   return (
     <div className='min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-indigo-950 flex flex-col'>
@@ -127,18 +135,53 @@ export default function ChatPage() {
               {roomInfo.title}
             </h1>
           </div>
+
+          {/* 模式切换按钮 */}
+          <div className='flex items-center space-x-2 bg-gray-800/50 rounded-lg p-1'>
+            <button
+              onClick={() => setRoomMode('voice')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                roomMode === 'voice'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              仅语音
+            </button>
+            <button
+              onClick={() => setRoomMode('video')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                roomMode === 'video'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+            >
+              视频会议
+            </button>
+          </div>
         </div>
 
-        {/* 语音房间区域 - 居中显示 */}
-        <div className='flex-1 flex items-center justify-center'>
-          <div className='w-full max-w-4xl'>
-            <VoiceRoom
-              roomName={voiceRoomName}
-              participantName={Math.random().toString(36).substring(2, 11)}
-              onDisconnect={() => {
-                // 可以在这里添加断开连接后的逻辑
-              }}
-            />
+        {/* 房间区域 - 居中显示 */}
+        <div className='flex-1 flex items-center justify-center min-h-0'>
+          <div className='w-full max-w-7xl h-full max-h-[calc(100vh-200px)]'>
+            {roomMode === 'video' ? (
+              <MeetRoom
+                roomName={voiceRoomName}
+                participantName={currentUserName}
+                enableVideo={true}
+                onDisconnect={() => {
+                  // 可以在这里添加断开连接后的逻辑
+                }}
+              />
+            ) : (
+              <VoiceRoom
+                roomName={voiceRoomName}
+                participantName={currentUserName}
+                onDisconnect={() => {
+                  // 可以在这里添加断开连接后的逻辑
+                }}
+              />
+            )}
           </div>
         </div>
       </div>

@@ -11,6 +11,8 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
+    "@livekit/components-react": "^2.9.16",
+    "@livekit/components-styles": "^1.2.0",
     "livekit-client": "^2.15.15",
     "livekit-server-sdk": "^2.14.1",
     "lucide-react": "^0.553.0",
