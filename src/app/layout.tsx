@@ -1,11 +1,11 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import './globals.css'
 
 const inter = Inter({
   subsets: ['latin'],
-  variable: '--font-inter',
-});
+  variable: '--font-inter'
+})
 
 export const metadata: Metadata = {
   title: 'WaveHub - AI驱动的实时语音协作平台',
@@ -16,18 +16,18 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'WaveHub - AI驱动的实时语音协作平台',
     description: '由AI驱动的实时语音协作平台，连接全球，共创未来',
-    type: 'website',
-  },
-};
+    type: 'website'
+  }
+}
 
 export default function RootLayout({
-  children,
+  children
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
-    <html lang="zh-CN" className="scroll-smooth" suppressHydrationWarning>
+    <html lang='zh-CN' className='scroll-smooth' suppressHydrationWarning>
       <body className={`${inter.variable} font-inter antialiased`}>{children}</body>
     </html>
-  );
+  )
 }

@@ -28,26 +28,19 @@ export default function ChatPage() {
     }
   }, [])
 
-  const [currentUser, setCurrentUser] = useState({
-    id: 'user-0',
-    name: '用户',
-    avatar: '😊'
-  })
+  // 语音房间名称 - 初始使用固定值，避免 hydration mismatch
+  const [voiceRoomName, setVoiceRoomName] = useState('wavehub-main-room')
 
-  // 在客户端挂载后生成随机用户名，避免 hydration mismatch
+  // 在客户端挂载后根据URL参数更新房间名称
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setCurrentUser({
-        id: `user-${Date.now()}`,
-        name: Math.random().toString(36).substring(2, 11),
-        avatar: '😊'
-      })
-    }, 0)
-    return () => clearTimeout(timer)
-  }, [])
-
-  // 生成语音房间名称
-  const voiceRoomName = generateRoomName(urlParams.section, urlParams.category)
+    if (typeof window !== 'undefined') {
+      const timer = setTimeout(() => {
+        const roomName = generateRoomName(urlParams.section, urlParams.category)
+        setVoiceRoomName(roomName)
+      }, 0)
+      return () => clearTimeout(timer)
+    }
+  }, [urlParams.section, urlParams.category])
 
   // 根据URL参数生成聊天室信息
   const getRoomInfo = () => {
@@ -141,7 +134,7 @@ export default function ChatPage() {
           <div className='w-full max-w-4xl'>
             <VoiceRoom
               roomName={voiceRoomName}
-              participantName={currentUser.name}
+              participantName={Math.random().toString(36).substring(2, 11)}
               onDisconnect={() => {
                 // 可以在这里添加断开连接后的逻辑
               }}
