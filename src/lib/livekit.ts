@@ -5,7 +5,7 @@
 export const LIVEKIT_CONFIG = {
   // LiveKit 服务器 URL（开发环境可以使用 LiveKit Cloud 或自建服务器）
   // 生产环境请使用环境变量
-  url: process.env.NEXT_PUBLIC_LIVEKIT_URL || 'ws://localhost:7880',
+  url: process.env.LIVEKIT_URL || 'ws://localhost:7880',
 
   // API Key 和 Secret（仅在服务端使用）
   apiKey: process.env.LIVEKIT_API_KEY || 'devkey',

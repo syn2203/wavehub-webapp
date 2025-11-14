@@ -54,13 +54,13 @@ docker run --rm -p 7880:7880 \
 
 ```bash
 # LiveKit 配置
-NEXT_PUBLIC_LIVEKIT_URL=wss://your-project.livekit.cloud
+LIVEKIT_URL=wss://your-project.livekit.cloud
 LIVEKIT_API_KEY=your-api-key
 LIVEKIT_API_SECRET=your-api-secret
 ```
 
 **注意：**
-- `NEXT_PUBLIC_LIVEKIT_URL` 必须以 `NEXT_PUBLIC_` 开头，因为它会在客户端使用
+- `LIVEKIT_URL` 必须以 `NEXT_PUBLIC_` 开头，因为它会在客户端使用
 - `LIVEKIT_API_KEY` 和 `LIVEKIT_API_SECRET` 仅在服务端使用，不会暴露到客户端
 
 ### 3. 启动开发服务器

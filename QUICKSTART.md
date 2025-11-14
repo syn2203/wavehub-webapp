@@ -19,7 +19,7 @@ docker run --rm -p 7880:7880 \
 
 ```bash
 # 本地开发配置
-NEXT_PUBLIC_LIVEKIT_URL=ws://localhost:7880
+LIVEKIT_URL=ws://localhost:7880
 LIVEKIT_API_KEY=devkey
 LIVEKIT_API_SECRET=secret
 ```
@@ -53,7 +53,7 @@ npm run dev
 3. 更新 `.env.local`：
 
 ```bash
-NEXT_PUBLIC_LIVEKIT_URL=wss://your-project.livekit.cloud
+LIVEKIT_URL=wss://your-project.livekit.cloud
 LIVEKIT_API_KEY=your-api-key
 LIVEKIT_API_SECRET=your-api-secret
 ```
