@@ -50,6 +50,8 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
   // 音频控制状态
   const [isMicEnabled, setIsMicEnabled] = useState(false)
   const [isSpeakerEnabled, setIsSpeakerEnabled] = useState(true)
+  const [audioPlaybackReady, setAudioPlaybackReady] = useState(false)
+  const [needsAudioStart, setNeedsAudioStart] = useState(false)
 
   // 参与者列表
   const [participants, setParticipants] = useState<ParticipantInfo[]>([])
@@ -64,6 +66,29 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
     participantCount: 0,
     activeSpeakers: 0
   })
+
+  /**
+   * 手动/自动尝试开启音频播放，处理浏览器自动播放限制
+   */
+  const startAudioPlayback = useCallback(async () => {
+    if (!room) return false
+
+    try {
+      await room.startAudio()
+      setAudioPlaybackReady(true)
+      setNeedsAudioStart(false)
+      if (error === ERROR_MESSAGES['audio-blocked']) {
+        setError(null)
+      }
+      return true
+    } catch (err) {
+      console.error('Failed to start audio playback:', err)
+      setAudioPlaybackReady(false)
+      setNeedsAudioStart(true)
+      setError(ERROR_MESSAGES['audio-blocked'] || '浏览器阻止了音频播放，请手动启用')
+      return false
+    }
+  }, [room, error])
 
   /**
    * 连接到 LiveKit 房间
@@ -112,13 +137,16 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
 
       console.log('✅ 成功连接到房间:', room.name, responseDate)
       setIsConnected(true)
+
+      // 尝试立即开启音频播放，如果浏览器阻止则提示用户手动开启
+      await startAudioPlayback()
     } catch (err: any) {
       console.error('❌ 连接房间失败:', err)
       setError(ERROR_MESSAGES['connection-failed'] || err.message || '连接失败，请检查网络和配置')
     } finally {
       setIsConnecting(false)
     }
-  }, [room, roomName, participantName, isConnecting, isConnected])
+  }, [room, roomName, participantName, isConnecting, isConnected, startAudioPlayback])
 
   /**
    * 断开连接
@@ -132,6 +160,9 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
       setIsMicEnabled(false)
       setParticipants([])
       setLocalParticipant(null)
+
+      setAudioPlaybackReady(false)
+      setNeedsAudioStart(false)
 
       if (onDisconnect) {
         onDisconnect()
@@ -184,10 +215,18 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
   /**
    * 切换扬声器（静音/取消静音所有远程音频）
    */
-  const toggleSpeaker = useCallback(() => {
+  const toggleSpeaker = useCallback(async () => {
     if (!room) return
 
     const enabled = !isSpeakerEnabled
+
+    // 当用户重新打开扬声器时尝试启动音频播放
+    if (enabled && !audioPlaybackReady) {
+      const started = await startAudioPlayback()
+      if (!started) {
+        return
+      }
+    }
 
     // 静音/取消静音所有远程参与者的音频元素
     room.remoteParticipants.forEach(participant => {
@@ -203,7 +242,7 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
     })
 
     setIsSpeakerEnabled(enabled)
-  }, [room, isSpeakerEnabled])
+  }, [room, isSpeakerEnabled, audioPlaybackReady, startAudioPlayback])
 
   /**
    * 切换音频设备
@@ -367,6 +406,15 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
       updateParticipants()
     }
 
+    const handleAudioPlaybackChanged = (canPlayback: boolean) => {
+      console.log('Audio playback status:', canPlayback)
+      setAudioPlaybackReady(canPlayback)
+      setNeedsAudioStart(!canPlayback)
+      if (!canPlayback) {
+        setError(ERROR_MESSAGES['audio-blocked'] || '浏览器阻止了音频播放，请手动启用')
+      }
+    }
+
     // 连接质量变化
     const handleConnectionQualityChanged = (quality: any, participant: Participant) => {
       console.log('Connection quality changed:', participant.identity, quality)
@@ -391,7 +439,7 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
       .on(RoomEvent.TrackSubscribed, handleTrackSubscribed)
       .on(RoomEvent.TrackUnsubscribed, handleTrackUnsubscribed)
       .on(RoomEvent.ActiveSpeakersChanged, handleActiveSpeakersChanged)
-      .on(RoomEvent.AudioPlaybackStatusChanged, handleAudioLevelChanged)
+      .on(RoomEvent.AudioPlaybackStatusChanged, handleAudioPlaybackChanged)
       .on(RoomEvent.ConnectionQualityChanged, handleConnectionQualityChanged)
       .on(RoomEvent.Disconnected, handleDisconnected)
 
@@ -406,7 +454,7 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
         .off(RoomEvent.TrackSubscribed, handleTrackSubscribed)
         .off(RoomEvent.TrackUnsubscribed, handleTrackUnsubscribed)
         .off(RoomEvent.ActiveSpeakersChanged, handleActiveSpeakersChanged)
-        .off(RoomEvent.AudioPlaybackStatusChanged, handleAudioLevelChanged)
+        .off(RoomEvent.AudioPlaybackStatusChanged, handleAudioPlaybackChanged)
         .off(RoomEvent.ConnectionQualityChanged, handleConnectionQualityChanged)
         .off(RoomEvent.Disconnected, handleDisconnected)
     }
@@ -464,7 +512,9 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
       <div
         key={participant.identity}
         className={`flex items-center space-x-3 p-3 rounded-lg transition-all ${
-          participant.isSpeaking ? 'bg-blue-100 ring-2 ring-blue-500' : 'bg-gray-50'
+          participant.isSpeaking
+            ? 'bg-blue-900/50 ring-2 ring-blue-500'
+            : 'bg-gray-800/50 border border-gray-700'
         }`}
       >
         <div className='relative'>
@@ -472,24 +522,24 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
             {participant.name.charAt(0).toUpperCase()}
           </div>
           {participant.isSpeaking && (
-            <div className='absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white animate-pulse' />
+            <div className='absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-gray-800 animate-pulse' />
           )}
         </div>
         <div className='flex-1 min-w-0'>
           <div className='flex items-center space-x-2'>
-            <span className='font-medium text-gray-900 truncate'>
+            <span className='font-medium text-white truncate'>
               {participant.name}
-              {isLocal && <span className='text-xs text-gray-500 ml-1'>(你)</span>}
+              {isLocal && <span className='text-xs text-gray-400 ml-1'>(你)</span>}
             </span>
             {participant.audioEnabled ? (
-              <Mic className='w-4 h-4 text-green-600' />
+              <Mic className='w-4 h-4 text-green-400' />
             ) : (
-              <MicOff className='w-4 h-4 text-red-600' />
+              <MicOff className='w-4 h-4 text-red-400' />
             )}
           </div>
           {participant.isSpeaking && (
             <div className='mt-1'>
-              <div className='h-1 bg-gray-200 rounded-full overflow-hidden'>
+              <div className='h-1 bg-gray-700 rounded-full overflow-hidden'>
                 <div
                   className='h-full bg-green-500 transition-all duration-100'
                   style={{ width: `${audioLevelPercent}%` }}
@@ -503,31 +553,31 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
   }
 
   return (
-    <div className='bg-white rounded-2xl shadow-lg p-6'>
+    <div className='bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-700 p-6'>
       {/* 头部 */}
       <div className='flex items-center justify-between mb-6'>
         <div>
-          <h3 className='text-xl font-bold text-gray-900 flex items-center'>
-            <Users className='w-6 h-6 text-blue-500 mr-2' />
+          <h3 className='text-xl font-bold text-white flex items-center'>
+            <Users className='w-6 h-6 text-blue-400 mr-2' />
             语音房间
           </h3>
-          <p className='text-sm text-gray-600 mt-1'>
+          <p className='text-sm text-gray-400 mt-1'>
             {roomName} • {stats.participantCount} 人在线
           </p>
         </div>
         <div className='flex items-center space-x-2'>
           {connectionState === ConnectionState.Connected ? (
-            <div className='flex items-center text-green-600 text-sm'>
+            <div className='flex items-center text-green-400 text-sm'>
               <Wifi className='w-4 h-4 mr-1' />
               已连接
             </div>
           ) : connectionState === ConnectionState.Connecting ? (
-            <div className='flex items-center text-yellow-600 text-sm'>
+            <div className='flex items-center text-yellow-400 text-sm'>
               <Wifi className='w-4 h-4 mr-1 animate-pulse' />
               连接中...
             </div>
           ) : (
-            <div className='flex items-center text-gray-400 text-sm'>
+            <div className='flex items-center text-gray-500 text-sm'>
               <WifiOff className='w-4 h-4 mr-1' />
               未连接
             </div>
@@ -537,15 +587,29 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
 
       {/* 错误提示 */}
       {error && (
-        <div className='mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start space-x-2'>
-          <AlertCircle className='w-5 h-5 text-red-600 flex-shrink-0 mt-0.5' />
+        <div className='mb-4 p-3 bg-red-900/30 border border-red-700 rounded-lg flex items-start space-x-2'>
+          <AlertCircle className='w-5 h-5 text-red-400 flex-shrink-0 mt-0.5' />
           <div className='flex-1'>
-            <p className='text-sm text-red-800'>{error}</p>
+            <p className='text-sm text-red-200'>{error}</p>
             <button
               onClick={() => setError(null)}
-              className='text-xs text-red-600 hover:text-red-800 mt-1 underline'
+              className='text-xs text-red-400 hover:text-red-300 mt-1 underline'
             >
               关闭
+            </button>
+          </div>
+        </div>
+      )}
+
+      {needsAudioStart && (
+        <div className='mb-4 p-3 bg-blue-900/30 border border-blue-700 rounded-lg text-sm text-blue-200'>
+          浏览器阻止了自动播放，请点击下方按钮启用音频。
+          <div className='mt-3 flex flex-wrap gap-2'>
+            <button
+              onClick={startAudioPlayback}
+              className='px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors'
+            >
+              启用音频
             </button>
           </div>
         </div>
@@ -554,7 +618,7 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
       {/* 连接状态 */}
       {!isConnected && !isConnecting && (
         <div className='text-center py-8'>
-          <p className='text-gray-600 mb-4'>点击下方按钮加入语音房间</p>
+          <p className='text-gray-400 mb-4'>点击下方按钮加入语音房间</p>
           <button onClick={connectToRoom} className='btn-primary px-6 py-3'>
             加入房间
           </button>
@@ -563,8 +627,8 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
 
       {isConnecting && (
         <div className='text-center py-8'>
-          <div className='inline-block w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4' />
-          <p className='text-gray-600'>正在连接到房间...</p>
+          <div className='inline-block w-8 h-8 border-4 border-blue-400 border-t-transparent rounded-full animate-spin mb-4' />
+          <p className='text-gray-400'>正在连接到房间...</p>
         </div>
       )}
 
@@ -573,7 +637,7 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
         <>
           {/* 参与者列表 */}
           <div className='mb-6'>
-            <h4 className='text-sm font-semibold text-gray-700 mb-3'>
+            <h4 className='text-sm font-semibold text-gray-300 mb-3'>
               参与者 ({stats.participantCount})
             </h4>
             <div className='space-y-2 max-h-64 overflow-y-auto'>
@@ -585,17 +649,17 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
           {/* 音频设备选择 */}
           {audioDevices.length > 1 && (
             <div className='mb-6'>
-              <label className='block text-sm font-medium text-gray-700 mb-2'>
+              <label className='block text-sm font-medium text-gray-300 mb-2'>
                 <Settings className='w-4 h-4 inline mr-1' />
                 麦克风设备
               </label>
               <select
                 value={selectedMicId}
                 onChange={e => switchMicrophone(e.target.value)}
-                className='w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                className='w-full px-3 py-2 bg-gray-700 border border-gray-600 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors'
               >
                 {audioDevices.map(device => (
-                  <option key={device.deviceId} value={device.deviceId}>
+                  <option key={device.deviceId} value={device.deviceId} className='bg-gray-700'>
                     {device.label || `麦克风 ${device.deviceId.slice(0, 8)}`}
                   </option>
                 ))}
@@ -610,8 +674,8 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
               onClick={toggleMicrophone}
               className={`p-4 rounded-full transition-all ${
                 isMicEnabled
-                  ? 'bg-blue-600 text-white hover:bg-blue-700'
-                  : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                  ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/50'
+                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
               }`}
               title={isMicEnabled ? '关闭麦克风' : '打开麦克风'}
             >
@@ -623,8 +687,8 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
               onClick={toggleSpeaker}
               className={`p-4 rounded-full transition-all ${
                 isSpeakerEnabled
-                  ? 'bg-green-600 text-white hover:bg-green-700'
-                  : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+                  ? 'bg-green-600 text-white hover:bg-green-700 shadow-lg shadow-green-500/50'
+                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
               }`}
               title={isSpeakerEnabled ? '静音扬声器' : '打开扬声器'}
             >
@@ -634,7 +698,7 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
             {/* 挂断按钮 */}
             <button
               onClick={disconnectFromRoom}
-              className='p-4 rounded-full bg-red-600 text-white hover:bg-red-700 transition-all'
+              className='p-4 rounded-full bg-red-600 text-white hover:bg-red-700 transition-all shadow-lg shadow-red-500/50'
               title='离开房间'
             >
               <PhoneOff className='w-6 h-6' />
@@ -642,15 +706,15 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
           </div>
 
           {/* 统计信息 */}
-          <div className='mt-6 pt-6 border-t border-gray-200'>
+          <div className='mt-6 pt-6 border-t border-gray-700'>
             <div className='grid grid-cols-2 gap-4 text-center'>
               <div>
-                <div className='text-2xl font-bold text-blue-600'>{stats.participantCount}</div>
-                <div className='text-xs text-gray-600'>在线人数</div>
+                <div className='text-2xl font-bold text-blue-400'>{stats.participantCount}</div>
+                <div className='text-xs text-gray-400'>在线人数</div>
               </div>
               <div>
-                <div className='text-2xl font-bold text-green-600'>{stats.activeSpeakers}</div>
-                <div className='text-xs text-gray-600'>正在发言</div>
+                <div className='text-2xl font-bold text-green-400'>{stats.activeSpeakers}</div>
+                <div className='text-xs text-gray-400'>正在发言</div>
               </div>
             </div>
           </div>
