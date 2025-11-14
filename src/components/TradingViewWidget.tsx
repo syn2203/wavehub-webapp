@@ -27,7 +27,7 @@ export default function TradingViewWidget({
   enable_publishing = false,
   allow_symbol_change = true,
   container_id,
-  type = 'widget'
+  type = 'widget',
 }: TradingViewWidgetProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -56,18 +56,19 @@ export default function TradingViewWidget({
             { proName: 'BINANCE:SOLUSDT', title: 'Solana' },
             { proName: 'BINANCE:XRPUSDT', title: 'XRP' },
             { proName: 'BINANCE:DOTUSDT', title: 'Polkadot' },
-            { proName: 'BINANCE:DOGEUSDT', title: 'Dogecoin' }
+            { proName: 'BINANCE:DOGEUSDT', title: 'Dogecoin' },
           ],
           showSymbolLogo: true,
           colorTheme: theme,
           isTransparent: false,
           displayMode: 'adaptive',
-          locale: locale
+          locale: locale,
         };
         break;
 
       case 'market-overview':
-        script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js';
+        script.src =
+          'https://s3.tradingview.com/external-embedding/embed-widget-market-overview.js';
         config = {
           colorTheme: theme,
           dateRange: '12M',
@@ -96,11 +97,11 @@ export default function TradingViewWidget({
                 { s: 'BINANCE:ETHUSDT', d: 'Ethereum' },
                 { s: 'BINANCE:BNBUSDT', d: 'BNB' },
                 { s: 'BINANCE:ADAUSDT', d: 'Cardano' },
-                { s: 'BINANCE:SOLUSDT', d: 'Solana' }
+                { s: 'BINANCE:SOLUSDT', d: 'Solana' },
               ],
-              originalTitle: 'Crypto'
-            }
-          ]
+              originalTitle: 'Crypto',
+            },
+          ],
         };
         break;
 
@@ -114,12 +115,13 @@ export default function TradingViewWidget({
           displayCurrency: 'USD',
           colorTheme: theme,
           locale: locale,
-          isTransparent: false
+          isTransparent: false,
         };
         break;
 
       case 'crypto-mkt-screener':
-        script.src = 'https://s3.tradingview.com/external-embedding/embed-widget-crypto-mkt-screener.js';
+        script.src =
+          'https://s3.tradingview.com/external-embedding/embed-widget-crypto-mkt-screener.js';
         config = {
           width: width,
           height: height,
@@ -128,7 +130,7 @@ export default function TradingViewWidget({
           displayCurrency: 'USD',
           colorTheme: theme,
           locale: locale,
-          isTransparent: false
+          isTransparent: false,
         };
         break;
 
@@ -146,7 +148,7 @@ export default function TradingViewWidget({
           toolbar_bg: toolbar_bg,
           enable_publishing: enable_publishing,
           allow_symbol_change: allow_symbol_change,
-          container_id: container_id || `tradingview_${Math.random().toString(36).substr(2, 9)}`
+          container_id: container_id || `tradingview_${Math.random().toString(36).substr(2, 9)}`,
         };
     }
 
@@ -158,13 +160,28 @@ export default function TradingViewWidget({
         containerRef.current.innerHTML = '';
       }
     };
-  }, [symbol, width, height, theme, style, locale, toolbar_bg, enable_publishing, allow_symbol_change, container_id, type]);
+  }, [
+    symbol,
+    width,
+    height,
+    theme,
+    style,
+    locale,
+    toolbar_bg,
+    enable_publishing,
+    allow_symbol_change,
+    container_id,
+    type,
+  ]);
 
   return (
-    <div 
+    <div
       ref={containerRef}
       className="tradingview-widget-container"
-      style={{ width: typeof width === 'number' ? `${width}px` : width, height: typeof height === 'number' ? `${height}px` : height }}
+      style={{
+        width: typeof width === 'number' ? `${width}px` : width,
+        height: typeof height === 'number' ? `${height}px` : height,
+      }}
     />
   );
 }

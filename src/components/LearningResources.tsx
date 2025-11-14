@@ -37,7 +37,7 @@ export default function LearningResources() {
       thumbnail: '🪙',
       tags: ['加密货币', '投资基础', '风险管理'],
       price: 299,
-      isFree: false
+      isFree: false,
     },
     {
       id: '2',
@@ -52,7 +52,7 @@ export default function LearningResources() {
       thumbnail: '📊',
       tags: ['技术分析', 'K线图', '交易策略'],
       price: 199,
-      isFree: false
+      isFree: false,
     },
     {
       id: '3',
@@ -67,7 +67,7 @@ export default function LearningResources() {
       thumbnail: '💎',
       tags: ['价值投资', '股票分析', '巴菲特'],
       price: 399,
-      isFree: false
+      isFree: false,
     },
     {
       id: '4',
@@ -82,7 +82,7 @@ export default function LearningResources() {
       thumbnail: '📚',
       tags: ['投资入门', '理财规划', '新手指南'],
       price: 0,
-      isFree: true
+      isFree: true,
     },
     {
       id: '5',
@@ -97,7 +97,7 @@ export default function LearningResources() {
       thumbnail: '🧠',
       tags: ['交易心理', '情绪管理', '行为金融'],
       price: 99,
-      isFree: false
+      isFree: false,
     },
     {
       id: '6',
@@ -112,49 +112,66 @@ export default function LearningResources() {
       thumbnail: '🔗',
       tags: ['DeFi', '去中心化金融', '协议分析'],
       price: 499,
-      isFree: false
-    }
+      isFree: false,
+    },
   ];
 
-  const filteredResources = activeTab === 'all' 
-    ? resources 
-    : resources.filter(resource => resource.type === activeTab);
+  const filteredResources =
+    activeTab === 'all' ? resources : resources.filter((resource) => resource.type === activeTab);
 
   const getTypeIcon = (type: string) => {
     switch (type) {
-      case 'course': return BookOpen;
-      case 'video': return Play;
-      case 'article': return BookOpen;
-      case 'webinar': return Users;
-      default: return BookOpen;
+      case 'course':
+        return BookOpen;
+      case 'video':
+        return Play;
+      case 'article':
+        return BookOpen;
+      case 'webinar':
+        return Users;
+      default:
+        return BookOpen;
     }
   };
 
   const getTypeLabel = (type: string) => {
     switch (type) {
-      case 'course': return '课程';
-      case 'video': return '视频';
-      case 'article': return '文章';
-      case 'webinar': return '直播';
-      default: return '课程';
+      case 'course':
+        return '课程';
+      case 'video':
+        return '视频';
+      case 'article':
+        return '文章';
+      case 'webinar':
+        return '直播';
+      default:
+        return '课程';
     }
   };
 
   const getLevelColor = (level: string) => {
     switch (level) {
-      case 'beginner': return 'bg-green-100 text-green-700';
-      case 'intermediate': return 'bg-yellow-100 text-yellow-700';
-      case 'advanced': return 'bg-red-100 text-red-700';
-      default: return 'bg-gray-100 text-gray-700';
+      case 'beginner':
+        return 'bg-green-100 text-green-700';
+      case 'intermediate':
+        return 'bg-yellow-100 text-yellow-700';
+      case 'advanced':
+        return 'bg-red-100 text-red-700';
+      default:
+        return 'bg-gray-100 text-gray-700';
     }
   };
 
   const getLevelLabel = (level: string) => {
     switch (level) {
-      case 'beginner': return '初级';
-      case 'intermediate': return '中级';
-      case 'advanced': return '高级';
-      default: return '初级';
+      case 'beginner':
+        return '初级';
+      case 'intermediate':
+        return '中级';
+      case 'advanced':
+        return '高级';
+      default:
+        return '初级';
     }
   };
 
@@ -170,10 +187,7 @@ export default function LearningResources() {
             <p className="text-sm text-gray-500">提升投资技能，掌握专业知识</p>
           </div>
         </div>
-        <Link 
-          href="/learn"
-          className="text-sm text-blue-600 hover:text-blue-700 font-medium"
-        >
+        <Link href="/learn" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
           查看全部 →
         </Link>
       </div>
@@ -184,7 +198,7 @@ export default function LearningResources() {
           { key: 'all', label: '全部' },
           { key: 'course', label: '课程' },
           { key: 'video', label: '视频' },
-          { key: 'article', label: '文章' }
+          { key: 'article', label: '文章' },
         ].map((tab) => (
           <button
             key={tab.key}
@@ -204,9 +218,9 @@ export default function LearningResources() {
       <div className="space-y-4">
         {filteredResources.slice(0, 4).map((resource) => {
           const TypeIcon = getTypeIcon(resource.type);
-          
+
           return (
-            <div 
+            <div
               key={resource.id}
               className="p-4 bg-gradient-to-r from-gray-50 to-white rounded-xl border border-gray-100 hover:shadow-md transition-all duration-200 group"
             >
@@ -216,14 +230,16 @@ export default function LearningResources() {
                     {resource.thumbnail}
                   </div>
                 </div>
-                
+
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center space-x-2 mb-2">
                     <div className="flex items-center space-x-1 px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">
                       <TypeIcon className="w-3 h-3" />
                       <span>{getTypeLabel(resource.type)}</span>
                     </div>
-                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${getLevelColor(resource.level)}`}>
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${getLevelColor(resource.level)}`}
+                    >
                       {getLevelLabel(resource.level)}
                     </span>
                     {resource.isFree && (
@@ -233,7 +249,7 @@ export default function LearningResources() {
                     )}
                   </div>
 
-                  <Link 
+                  <Link
                     href={`/learn/${resource.id}`}
                     className="block group-hover:text-blue-600 transition-colors"
                   >
@@ -242,13 +258,11 @@ export default function LearningResources() {
                     </h4>
                   </Link>
 
-                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                    {resource.description}
-                  </p>
+                  <p className="text-sm text-gray-600 mb-3 line-clamp-2">{resource.description}</p>
 
                   <div className="flex flex-wrap gap-1 mb-3">
                     {resource.tags.map((tag) => (
-                      <span 
+                      <span
                         key={tag}
                         className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs"
                       >
@@ -292,9 +306,7 @@ export default function LearningResources() {
       <div className="mt-6 pt-4 border-t border-gray-100">
         <div className="grid grid-cols-3 gap-4 text-center">
           <div>
-            <div className="text-lg font-bold text-blue-600">
-              {resources.length}
-            </div>
+            <div className="text-lg font-bold text-blue-600">{resources.length}</div>
             <div className="text-xs text-gray-500">总课程</div>
           </div>
           <div>
@@ -305,7 +317,7 @@ export default function LearningResources() {
           </div>
           <div>
             <div className="text-lg font-bold text-purple-600">
-              {resources.filter(r => r.isFree).length}
+              {resources.filter((r) => r.isFree).length}
             </div>
             <div className="text-xs text-gray-500">免费课程</div>
           </div>
@@ -314,16 +326,10 @@ export default function LearningResources() {
 
       {/* 行动按钮 */}
       <div className="mt-4 grid grid-cols-2 gap-3">
-        <Link
-          href="/learn"
-          className="btn-primary py-3 text-center"
-        >
+        <Link href="/learn" className="btn-primary py-3 text-center">
           📚 浏览全部课程
         </Link>
-        <Link
-          href="/learn/free"
-          className="btn-secondary py-3 text-center"
-        >
+        <Link href="/learn/free" className="btn-secondary py-3 text-center">
           🎁 免费课程
         </Link>
       </div>

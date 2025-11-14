@@ -1,7 +1,20 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { X, Share2, Users, Link2, Copy, Check, MessageCircle, Clock, Wifi, QrCode, Download, Camera } from 'lucide-react';
+import {
+  X,
+  Share2,
+  Users,
+  Link2,
+  Copy,
+  Check,
+  MessageCircle,
+  Clock,
+  Wifi,
+  QrCode,
+  Download,
+  Camera,
+} from 'lucide-react';
 import QRCode from 'qrcode';
 import html2canvas from 'html2canvas';
 
@@ -30,16 +43,18 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
     if (typeof window !== 'undefined') {
       const url = `${window.location.origin}/chat?room=${roomInfo.roomId}`;
       setShareUrl(url);
-      
+
       // 生成二维码
       QRCode.toDataURL(url, {
         width: 200,
         margin: 2,
         color: {
           dark: '#1f2937',
-          light: '#ffffff'
-        }
-      }).then(setQrCodeUrl).catch(console.error);
+          light: '#ffffff',
+        },
+      })
+        .then(setQrCodeUrl)
+        .catch(console.error);
     }
   }, [roomInfo.roomId]);
 
@@ -74,25 +89,25 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
       alert('弹框未找到，请重新打开分享弹框');
       return;
     }
-    
+
     setIsSaving(true);
-    
+
     let closeButton: HTMLElement | null = null;
     let saveButton: HTMLElement | null = null;
-    
+
     try {
       // 等待一下确保DOM完全渲染
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
       // 临时隐藏关闭按钮和保存按钮
       closeButton = modalRef.current.querySelector('[data-close-button]') as HTMLElement;
       saveButton = modalRef.current.querySelector('[data-save-button]') as HTMLElement;
-      
+
       if (closeButton) closeButton.style.visibility = 'hidden';
       if (saveButton) saveButton.style.visibility = 'hidden';
 
       // 等待样式应用
-      await new Promise(resolve => setTimeout(resolve, 50));
+      await new Promise((resolve) => setTimeout(resolve, 50));
 
       // 调试信息
       console.log('开始截图，元素信息:', {
@@ -101,7 +116,7 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
         scrollWidth: modalRef.current.scrollWidth,
         scrollHeight: modalRef.current.scrollHeight,
         computedStyle: window.getComputedStyle(modalRef.current),
-        children: modalRef.current.children.length
+        children: modalRef.current.children.length,
       });
 
       // 优化的html2canvas配置
@@ -126,14 +141,15 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
         ignoreElements: (element) => {
           // 忽略某些可能导致问题的元素
           const htmlElement = element as HTMLElement;
-          const shouldIgnore = element.classList?.contains('ignore-screenshot') || 
-                              element.tagName === 'SCRIPT' ||
-                              element.tagName === 'NOSCRIPT' ||
-                              element.tagName === 'IFRAME' ||
-                              htmlElement.style?.display === 'none' ||
-                              htmlElement.style?.visibility === 'hidden' ||
-                              htmlElement.style?.opacity === '0';
-          
+          const shouldIgnore =
+            element.classList?.contains('ignore-screenshot') ||
+            element.tagName === 'SCRIPT' ||
+            element.tagName === 'NOSCRIPT' ||
+            element.tagName === 'IFRAME' ||
+            htmlElement.style?.display === 'none' ||
+            htmlElement.style?.visibility === 'hidden' ||
+            htmlElement.style?.opacity === '0';
+
           if (shouldIgnore) {
             console.log('忽略元素:', element);
           }
@@ -141,7 +157,7 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
         },
         onclone: (clonedDoc, element) => {
           console.log('克隆文档完成:', clonedDoc, element);
-          
+
           // 确保克隆的元素有正确的样式
           const clonedElement = element;
           clonedElement.style.position = 'relative';
@@ -150,44 +166,55 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
           clonedElement.style.transform = 'none';
           clonedElement.style.margin = '0';
           clonedElement.style.padding = '0';
-          
+
           // 修复不兼容的CSS属性
           const allElements = clonedElement.querySelectorAll('*');
-           allElements.forEach((el: any) => {
+          allElements.forEach((el: any) => {
             // 移除可能导致问题的CSS属性
             const style = el.style;
-            
+
             // 移除lab()颜色函数和其他现代CSS特性
-            ['color', 'backgroundColor', 'borderColor', 'boxShadow', 'textShadow'].forEach(prop => {
-              const value = style[prop];
-              if (value && (value.includes('lab(') || value.includes('lch(') || value.includes('oklab(') || value.includes('oklch('))) {
-                style[prop] = ''; // 清除不兼容的颜色
+            ['color', 'backgroundColor', 'borderColor', 'boxShadow', 'textShadow'].forEach(
+              (prop) => {
+                const value = style[prop];
+                if (
+                  value &&
+                  (value.includes('lab(') ||
+                    value.includes('lch(') ||
+                    value.includes('oklab(') ||
+                    value.includes('oklch('))
+                ) {
+                  style[prop] = ''; // 清除不兼容的颜色
+                }
               }
-            });
-            
+            );
+
             // 修复渐变背景
             if (style.backgroundImage && style.backgroundImage.includes('lab(')) {
               style.backgroundImage = 'linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%)';
             }
-            
+
             // 确保基本样式兼容性
             if (el.classList?.contains('bg-gradient-to-r')) {
               style.background = 'linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%)';
               style.backgroundImage = 'linear-gradient(90deg, #3b82f6 0%, #8b5cf6 100%)';
             }
-            
+
             // 修复可能的transform问题
             if (style.transform && style.transform.includes('translate3d')) {
-              style.transform = style.transform.replace(/translate3d\([^)]*\)/g, 'translateX(0) translateY(0)');
+              style.transform = style.transform.replace(
+                /translate3d\([^)]*\)/g,
+                'translateX(0) translateY(0)'
+              );
             }
           });
-        }
+        },
       });
 
       console.log('截图完成，canvas信息:', {
         width: canvas.width,
         height: canvas.height,
-        hasData: canvas.toDataURL().length > 100
+        hasData: canvas.toDataURL().length > 100,
       });
 
       // 恢复按钮显示
@@ -201,7 +228,7 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
 
       // 创建下载链接 - 使用更兼容的方式
       const dataUrl = canvas.toDataURL('image/png', 0.9);
-      
+
       // 检查dataUrl是否有效
       if (!dataUrl || dataUrl === 'data:,') {
         throw new Error('图片数据生成失败');
@@ -213,10 +240,12 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
           // @ts-expect-error - 新的文件系统API
           const fileHandle = await window.showSaveFilePicker({
             suggestedName: `WaveHub聊天室分享-${new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')}.png`,
-            types: [{
-              description: 'PNG图片',
-              accept: { 'image/png': ['.png'] }
-            }]
+            types: [
+              {
+                description: 'PNG图片',
+                accept: { 'image/png': ['.png'] },
+              },
+            ],
           });
           const writable = await fileHandle.createWritable();
           const response = await fetch(dataUrl);
@@ -229,27 +258,28 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
         // 传统下载方法
         downloadWithLink(dataUrl);
       }
-
     } catch (error) {
       console.error('保存图片失败:', error);
       console.error('错误详情:', {
         message: error instanceof Error ? error.message : '未知错误',
         stack: error instanceof Error ? error.stack : undefined,
         modalRef: !!modalRef.current,
-        modalDimensions: modalRef.current ? {
-          width: modalRef.current.offsetWidth,
-          height: modalRef.current.offsetHeight
-        } : null
+        modalDimensions: modalRef.current
+          ? {
+              width: modalRef.current.offsetWidth,
+              height: modalRef.current.offsetHeight,
+            }
+          : null,
       });
-      
+
       // 恢复按钮显示（错误情况下）
       if (closeButton) closeButton.style.visibility = 'visible';
       if (saveButton) saveButton.style.visibility = 'visible';
-      
+
       // 提供更详细的错误信息和解决方案
       let errorMessage = '保存图片失败，请重试';
       let suggestion = '';
-      
+
       if (error instanceof Error) {
         if (error.message.includes('网络') || error.message.includes('fetch')) {
           errorMessage = '网络错误，请检查网络连接后重试';
@@ -265,10 +295,12 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
           suggestion = '请尝试使用SVG保存方式';
         }
       }
-      
+
       // 自动切换到备用方法
       if (saveMethod === 'html2canvas') {
-        const shouldTryFallback = confirm(`${errorMessage}${suggestion ? '\n\n' + suggestion : ''}\n\n是否尝试使用SVG保存方式？`);
+        const shouldTryFallback = confirm(
+          `${errorMessage}${suggestion ? '\n\n' + suggestion : ''}\n\n是否尝试使用SVG保存方式？`
+        );
         if (shouldTryFallback) {
           setSaveMethod('fallback');
           // 延迟一下再尝试备用方法
@@ -278,7 +310,7 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
           return; // 不显示错误信息，直接尝试备用方法
         }
       }
-      
+
       alert(`${errorMessage}${suggestion ? '\n\n建议：' + suggestion : ''}`);
     } finally {
       setIsSaving(false);
@@ -291,11 +323,11 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
     link.download = `WaveHub聊天室分享-${new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')}.png`;
     link.href = dataUrl;
     link.style.display = 'none';
-    
+
     // 添加到DOM，点击，然后移除
     document.body.appendChild(link);
     link.click();
-    
+
     // 延迟移除，确保下载开始
     setTimeout(() => {
       document.body.removeChild(link);
@@ -305,29 +337,36 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
   // 备用保存方法 - 使用Canvas手动绘制
   const handleSaveAsFallback = async () => {
     if (!modalRef.current) return;
-    
+
     setIsSaving(true);
-    
+
     try {
       const modalElement = modalRef.current;
       const rect = modalElement.getBoundingClientRect();
-      
+
       // 创建Canvas
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       if (!ctx) throw new Error('无法获取Canvas上下文');
-      
+
       // 设置Canvas尺寸
       canvas.width = rect.width * 2; // 2倍分辨率
       canvas.height = rect.height * 2;
       ctx.scale(2, 2);
-      
+
       // 绘制背景
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, rect.width, rect.height);
-      
+
       // 绘制圆角矩形背景
-      const drawRoundedRect = (x: number, y: number, width: number, height: number, radius: number, fillStyle: string) => {
+      const drawRoundedRect = (
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+        radius: number,
+        fillStyle: string
+      ) => {
         ctx.fillStyle = fillStyle;
         ctx.beginPath();
         ctx.moveTo(x + radius, y);
@@ -342,30 +381,30 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
         ctx.closePath();
         ctx.fill();
       };
-      
+
       // 绘制渐变头部
       const gradient = ctx.createLinearGradient(0, 0, rect.width, 0);
       gradient.addColorStop(0, '#3b82f6');
       gradient.addColorStop(1, '#8b5cf6');
-      
+
       drawRoundedRect(24, 24, rect.width - 48, 80, 16, gradient.toString());
-      
+
       // 绘制文本
       ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 20px Inter, system-ui, sans-serif';
       ctx.fillText('分享聊天室', 48, 60);
-      
+
       ctx.font = '14px Inter, system-ui, sans-serif';
       ctx.fillText('邀请朋友加入对话', 48, 85);
-      
+
       // 绘制主题信息
       ctx.fillStyle = '#1f2937';
       ctx.font = 'bold 16px Inter, system-ui, sans-serif';
       ctx.fillText('聊天室主题', 48, 140);
-      
+
       ctx.font = 'bold 14px Inter, system-ui, sans-serif';
       ctx.fillText(roomInfo.title, 48, 165);
-      
+
       ctx.fillStyle = '#6b7280';
       ctx.font = '12px Inter, system-ui, sans-serif';
       const description = roomInfo.description;
@@ -373,7 +412,7 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
       const words = description.split('');
       let line = '';
       let y = 185;
-      
+
       for (let i = 0; i < words.length; i++) {
         const testLine = line + words[i];
         const metrics = ctx.measureText(testLine);
@@ -386,10 +425,10 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
         }
       }
       ctx.fillText(line, 48, y);
-      
+
       // 绘制统计信息
       const statsY = y + 40;
-      
+
       // 在线人数卡片
       drawRoundedRect(48, statsY, (rect.width - 120) / 2, 60, 8, '#f0fdf4');
       ctx.fillStyle = '#16a34a';
@@ -399,28 +438,39 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
       ctx.fillStyle = '#6b7280';
       ctx.font = '12px Inter, system-ui, sans-serif';
       ctx.fillText('在线人数', 48 + (rect.width - 120) / 4, statsY + 50);
-      
+
       // 总成员卡片
-      drawRoundedRect(48 + (rect.width - 120) / 2 + 24, statsY, (rect.width - 120) / 2, 60, 8, '#eff6ff');
+      drawRoundedRect(
+        48 + (rect.width - 120) / 2 + 24,
+        statsY,
+        (rect.width - 120) / 2,
+        60,
+        8,
+        '#eff6ff'
+      );
       ctx.fillStyle = '#2563eb';
       ctx.font = 'bold 18px Inter, system-ui, sans-serif';
-      ctx.fillText(`${roomInfo.participantCount} 人`, 48 + (rect.width - 120) * 3 / 4 + 24, statsY + 30);
+      ctx.fillText(
+        `${roomInfo.participantCount} 人`,
+        48 + ((rect.width - 120) * 3) / 4 + 24,
+        statsY + 30
+      );
       ctx.fillStyle = '#6b7280';
       ctx.font = '12px Inter, system-ui, sans-serif';
-      ctx.fillText('总成员', 48 + (rect.width - 120) * 3 / 4 + 24, statsY + 50);
-      
+      ctx.fillText('总成员', 48 + ((rect.width - 120) * 3) / 4 + 24, statsY + 50);
+
       // 绘制分享链接
       const linkY = statsY + 100;
       ctx.textAlign = 'left';
       ctx.fillStyle = '#6b7280';
       ctx.font = '14px Inter, system-ui, sans-serif';
       ctx.fillText('分享链接', 48, linkY);
-      
+
       drawRoundedRect(48, linkY + 10, rect.width - 96, 40, 8, '#f9fafb');
       ctx.fillStyle = '#1f2937';
       ctx.font = '10px monospace';
       ctx.fillText(shareUrl, 60, linkY + 32);
-      
+
       // 绘制须知
       const noticeY = linkY + 70;
       drawRoundedRect(48, noticeY, rect.width - 96, 60, 8, '#fef3c7');
@@ -429,29 +479,28 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
       ctx.fillText('分享须知', 60, noticeY + 25);
       ctx.font = '11px Inter, system-ui, sans-serif';
       ctx.fillText('通过此链接加入的用户将能够参与语音聊天和查看聊天记录。', 60, noticeY + 45);
-      
+
       // 下载图片
       const dataUrl = canvas.toDataURL('image/png', 0.9);
       downloadWithLink(dataUrl);
-      
     } catch (error) {
       console.error('备用保存方法失败:', error);
-      
+
       // 如果Canvas方法也失败，尝试SVG方法
       try {
         const svgData = createSVGFallback();
         const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
         const url = URL.createObjectURL(svgBlob);
-        
+
         const link = document.createElement('a');
         link.download = `WaveHub聊天室分享-${new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')}.svg`;
         link.href = url;
         link.style.display = 'none';
-        
+
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        
+
         setTimeout(() => URL.revokeObjectURL(url), 100);
       } catch (svgError) {
         console.error('SVG备用方法也失败:', svgError);
@@ -512,7 +561,10 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div ref={modalRef} className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden animate-scale-in">
+      <div
+        ref={modalRef}
+        className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden animate-scale-in"
+      >
         {/* 头部 */}
         <div className="relative bg-gradient-to-r from-blue-500 to-purple-600 text-white p-6">
           <button
@@ -582,16 +634,19 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
               </div>
             </div>
           </div>
-          
+
           <div className="mt-4 flex items-center space-x-2 text-sm text-gray-500">
             <Clock className="w-4 h-4" />
-            <span>创建于 {roomInfo.createdAt.toLocaleDateString('zh-CN', { 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit'
-            })}</span>
+            <span>
+              创建于{' '}
+              {roomInfo.createdAt.toLocaleDateString('zh-CN', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </span>
           </div>
         </div>
 
@@ -600,9 +655,7 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* 链接部分 */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                分享链接
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">分享链接</label>
               <div className="flex items-center space-x-2 mb-4">
                 <div className="flex-1 relative">
                   <input
@@ -618,17 +671,11 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
 
             {/* 二维码部分 */}
             <div className="flex flex-col items-center">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                扫码加入
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">扫码加入</label>
               <div className="p-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
                 {qrCodeUrl ? (
                   <div className="text-center">
-                    <img 
-                      src={qrCodeUrl} 
-                      alt="分享链接二维码" 
-                      className="w-32 h-32 mx-auto mb-2"
-                    />
+                    <img src={qrCodeUrl} alt="分享链接二维码" className="w-32 h-32 mx-auto mb-2" />
                     <div className="flex items-center justify-center space-x-1 text-xs text-gray-500">
                       <QrCode className="w-3 h-3" />
                       <span>扫码快速加入</span>
@@ -649,9 +696,7 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
               <button
                 onClick={handleCopyLink}
                 className={`flex items-center justify-center space-x-2 py-3 px-4 rounded-lg font-medium transition-all ${
-                  copied
-                    ? 'bg-green-500 text-white'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  copied ? 'bg-green-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                 }`}
               >
                 {copied ? (
@@ -681,14 +726,20 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
                   ) : (
                     <>
                       <Download className="w-5 h-5" />
-                      <span>{saveMethod === 'html2canvas' ? '保存图片(HTML2Canvas)' : '保存图片(Canvas绘制)'}</span>
+                      <span>
+                        {saveMethod === 'html2canvas'
+                          ? '保存图片(HTML2Canvas)'
+                          : '保存图片(Canvas绘制)'}
+                      </span>
                     </>
                   )}
                 </button>
-                
+
                 {/* 保存方式切换 */}
                 <button
-                  onClick={() => setSaveMethod(saveMethod === 'html2canvas' ? 'fallback' : 'html2canvas')}
+                  onClick={() =>
+                    setSaveMethod(saveMethod === 'html2canvas' ? 'fallback' : 'html2canvas')
+                  }
                   className="absolute -bottom-6 left-0 text-xs text-purple-600 hover:text-purple-800 underline"
                   title="切换保存方式"
                 >
@@ -712,7 +763,9 @@ export default function ShareModal({ isOpen, onClose, roomInfo }: ShareModalProp
               <div className="w-2 h-2 bg-amber-400 rounded-full mt-2 flex-shrink-0"></div>
               <div className="text-sm text-amber-700">
                 <p className="font-medium mb-1">分享须知</p>
-                <p>通过此链接加入的用户将能够参与语音聊天和查看聊天记录。请确保只与信任的人分享。</p>
+                <p>
+                  通过此链接加入的用户将能够参与语音聊天和查看聊天记录。请确保只与信任的人分享。
+                </p>
               </div>
             </div>
           </div>

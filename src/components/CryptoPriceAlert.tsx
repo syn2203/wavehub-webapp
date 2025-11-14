@@ -21,7 +21,7 @@ export default function CryptoPriceAlert() {
       targetPrice: 100000,
       currentPrice: 95420,
       type: 'above',
-      created: new Date()
+      created: new Date(),
     },
     {
       id: '2',
@@ -30,15 +30,15 @@ export default function CryptoPriceAlert() {
       targetPrice: 3000,
       currentPrice: 3542,
       type: 'below',
-      created: new Date()
-    }
+      created: new Date(),
+    },
   ]);
 
   const [newAlert, setNewAlert] = useState({
     symbol: 'BTC',
     name: '比特币',
     targetPrice: '',
-    type: 'above' as 'above' | 'below'
+    type: 'above' as 'above' | 'below',
   });
 
   const cryptoOptions = [
@@ -51,8 +51,8 @@ export default function CryptoPriceAlert() {
 
   const addAlert = () => {
     if (!newAlert.targetPrice) return;
-    
-    const selectedCrypto = cryptoOptions.find(c => c.symbol === newAlert.symbol);
+
+    const selectedCrypto = cryptoOptions.find((c) => c.symbol === newAlert.symbol);
     if (!selectedCrypto) return;
 
     const alert: PriceAlert = {
@@ -62,7 +62,7 @@ export default function CryptoPriceAlert() {
       targetPrice: parseFloat(newAlert.targetPrice),
       currentPrice: selectedCrypto.currentPrice,
       type: newAlert.type,
-      created: new Date()
+      created: new Date(),
     };
 
     setAlerts([...alerts, alert]);
@@ -70,14 +70,15 @@ export default function CryptoPriceAlert() {
   };
 
   const removeAlert = (id: string) => {
-    setAlerts(alerts.filter(alert => alert.id !== id));
+    setAlerts(alerts.filter((alert) => alert.id !== id));
   };
 
   const getAlertStatus = (alert: PriceAlert) => {
-    const isTriggered = alert.type === 'above' 
-      ? alert.currentPrice >= alert.targetPrice
-      : alert.currentPrice <= alert.targetPrice;
-    
+    const isTriggered =
+      alert.type === 'above'
+        ? alert.currentPrice >= alert.targetPrice
+        : alert.currentPrice <= alert.targetPrice;
+
     return isTriggered;
   };
 
@@ -99,16 +100,16 @@ export default function CryptoPriceAlert() {
             <select
               value={newAlert.symbol}
               onChange={(e) => {
-                const selected = cryptoOptions.find(c => c.symbol === e.target.value);
+                const selected = cryptoOptions.find((c) => c.symbol === e.target.value);
                 setNewAlert({
                   ...newAlert,
                   symbol: e.target.value,
-                  name: selected?.name || ''
+                  name: selected?.name || '',
                 });
               }}
               className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
-              {cryptoOptions.map(crypto => (
+              {cryptoOptions.map((crypto) => (
                 <option key={crypto.symbol} value={crypto.symbol}>
                   {crypto.name} ({crypto.symbol})
                 </option>
@@ -117,7 +118,9 @@ export default function CryptoPriceAlert() {
 
             <select
               value={newAlert.type}
-              onChange={(e) => setNewAlert({ ...newAlert, type: e.target.value as 'above' | 'below' })}
+              onChange={(e) =>
+                setNewAlert({ ...newAlert, type: e.target.value as 'above' | 'below' })
+              }
               className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             >
               <option value="above">价格高于</option>
@@ -157,16 +160,16 @@ export default function CryptoPriceAlert() {
                 <div
                   key={alert.id}
                   className={`p-4 rounded-lg border-2 ${
-                    isTriggered
-                      ? 'border-green-200 bg-green-50'
-                      : 'border-gray-200 bg-white'
+                    isTriggered ? 'border-green-200 bg-green-50' : 'border-gray-200 bg-white'
                   }`}
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
-                      <div className={`w-3 h-3 rounded-full ${
-                        isTriggered ? 'bg-green-500 animate-pulse' : 'bg-gray-300'
-                      }`} />
+                      <div
+                        className={`w-3 h-3 rounded-full ${
+                          isTriggered ? 'bg-green-500 animate-pulse' : 'bg-gray-300'
+                        }`}
+                      />
                       <div>
                         <div className="flex items-center space-x-2">
                           <span className="font-medium text-gray-900">{alert.name}</span>
@@ -178,7 +181,8 @@ export default function CryptoPriceAlert() {
                           )}
                         </div>
                         <div className="text-sm text-gray-600">
-                          当价格 {alert.type === 'above' ? '高于' : '低于'} ${alert.targetPrice.toLocaleString()}
+                          当价格 {alert.type === 'above' ? '高于' : '低于'} $
+                          {alert.targetPrice.toLocaleString()}
                         </div>
                       </div>
                     </div>
@@ -193,8 +197,18 @@ export default function CryptoPriceAlert() {
                         onClick={() => removeAlert(alert.id)}
                         className="text-red-500 hover:text-red-700 p-1"
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        <svg
+                          className="w-5 h-5"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
                         </svg>
                       </button>
                     </div>

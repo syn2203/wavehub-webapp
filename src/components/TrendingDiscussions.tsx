@@ -33,7 +33,7 @@ export default function TrendingDiscussions() {
         likes: 89,
         lastReply: new Date(now - 300000),
         isHot: true,
-        tags: ['比特币', '牛市', '技术分析']
+        tags: ['比特币', '牛市', '技术分析'],
       },
       {
         id: '2',
@@ -46,7 +46,7 @@ export default function TrendingDiscussions() {
         likes: 178,
         lastReply: new Date(now - 600000),
         isHot: true,
-        tags: ['新手指南', '投资组合', '风险管理']
+        tags: ['新手指南', '投资组合', '风险管理'],
       },
       {
         id: '3',
@@ -59,7 +59,7 @@ export default function TrendingDiscussions() {
         likes: 67,
         lastReply: new Date(now - 900000),
         isHot: false,
-        tags: ['AI', '科技股', '基本面分析']
+        tags: ['AI', '科技股', '基本面分析'],
       },
       {
         id: '4',
@@ -72,7 +72,7 @@ export default function TrendingDiscussions() {
         likes: 234,
         lastReply: new Date(now - 1200000),
         isHot: true,
-        tags: ['投资赛道', '2024', '趋势分析']
+        tags: ['投资赛道', '2024', '趋势分析'],
       },
       {
         id: '5',
@@ -85,8 +85,8 @@ export default function TrendingDiscussions() {
         likes: 45,
         lastReply: new Date(now - 1800000),
         isHot: false,
-        tags: ['美联储', '货币政策', '全球市场']
-      }
+        tags: ['美联储', '货币政策', '全球市场'],
+      },
     ];
   });
 
@@ -102,7 +102,7 @@ export default function TrendingDiscussions() {
 
   const getTimeAgo = (date: Date) => {
     const diff = Math.floor((currentTime.getTime() - date.getTime()) / 1000);
-    
+
     if (diff < 60) return '刚刚';
     if (diff < 3600) return `${Math.floor(diff / 60)}分钟前`;
     if (diff < 86400) return `${Math.floor(diff / 3600)}小时前`;
@@ -111,11 +111,11 @@ export default function TrendingDiscussions() {
 
   const getCategoryColor = (category: string) => {
     const colors: { [key: string]: string } = {
-      '加密货币': 'bg-orange-100 text-orange-700',
-      '投资策略': 'bg-blue-100 text-blue-700',
-      '股票分析': 'bg-green-100 text-green-700',
-      '市场观察': 'bg-purple-100 text-purple-700',
-      '宏观经济': 'bg-indigo-100 text-indigo-700'
+      加密货币: 'bg-orange-100 text-orange-700',
+      投资策略: 'bg-blue-100 text-blue-700',
+      股票分析: 'bg-green-100 text-green-700',
+      市场观察: 'bg-purple-100 text-purple-700',
+      宏观经济: 'bg-indigo-100 text-indigo-700',
     };
     return colors[category] || 'bg-gray-100 text-gray-700';
   };
@@ -132,17 +132,14 @@ export default function TrendingDiscussions() {
             <p className="text-sm text-gray-500">社区最活跃的话题</p>
           </div>
         </div>
-        <Link 
-          href="/discussions"
-          className="text-sm text-blue-600 hover:text-blue-700 font-medium"
-        >
+        <Link href="/discussions" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
           查看全部 →
         </Link>
       </div>
 
       <div className="space-y-4">
         {discussions.map((discussion, index) => (
-          <div 
+          <div
             key={discussion.id}
             className="p-4 bg-gradient-to-r from-gray-50 to-white rounded-xl border border-gray-100 hover:shadow-md transition-all duration-200 group"
           >
@@ -152,7 +149,7 @@ export default function TrendingDiscussions() {
                   {discussion.authorAvatar}
                 </div>
               </div>
-              
+
               <div className="flex-1 min-w-0">
                 <div className="flex items-center space-x-2 mb-2">
                   {discussion.isHot && (
@@ -161,13 +158,15 @@ export default function TrendingDiscussions() {
                       <span>热门</span>
                     </div>
                   )}
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(discussion.category)}`}>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(discussion.category)}`}
+                  >
                     {discussion.category}
                   </span>
                   <span className="text-xs text-gray-500">#{index + 1}</span>
                 </div>
 
-                <Link 
+                <Link
                   href={`/discussions/${discussion.id}`}
                   className="block group-hover:text-blue-600 transition-colors"
                 >
@@ -178,10 +177,7 @@ export default function TrendingDiscussions() {
 
                 <div className="flex flex-wrap gap-1 mb-3">
                   {discussion.tags.map((tag) => (
-                    <span 
-                      key={tag}
-                      className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs"
-                    >
+                    <span key={tag} className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
                       #{tag}
                     </span>
                   ))}
@@ -232,7 +228,7 @@ export default function TrendingDiscussions() {
           </div>
           <div>
             <div className="text-lg font-bold text-purple-600">
-              {discussions.filter(d => d.isHot).length}
+              {discussions.filter((d) => d.isHot).length}
             </div>
             <div className="text-xs text-gray-500">热门话题</div>
           </div>
@@ -240,10 +236,7 @@ export default function TrendingDiscussions() {
       </div>
 
       <div className="mt-4">
-        <Link
-          href="/discussions/new"
-          className="w-full btn-primary py-3 text-center block"
-        >
+        <Link href="/discussions/new" className="w-full btn-primary py-3 text-center block">
           💬 发起新讨论
         </Link>
       </div>

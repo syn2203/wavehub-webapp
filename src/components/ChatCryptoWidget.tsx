@@ -20,10 +20,38 @@ interface CryptoChatWidgetProps {
 export default function ChatCryptoWidget({ isMinimized = false, onToggle }: CryptoChatWidgetProps) {
   const [selectedCrypto, setSelectedCrypto] = useState('BINANCE:BTCUSDT');
   const [cryptoPrices, setCryptoPrices] = useState<CryptoPrice[]>([
-    { symbol: 'BTC', name: '比特币', price: 95420, change24h: 2.34, icon: '₿', color: 'text-orange-500' },
-    { symbol: 'ETH', name: '以太坊', price: 3542, change24h: -1.23, icon: 'Ξ', color: 'text-blue-500' },
-    { symbol: 'BNB', name: 'BNB', price: 692, change24h: 0.87, icon: '🟡', color: 'text-yellow-500' },
-    { symbol: 'SOL', name: 'Solana', price: 238, change24h: 4.56, icon: '🟣', color: 'text-purple-500' },
+    {
+      symbol: 'BTC',
+      name: '比特币',
+      price: 95420,
+      change24h: 2.34,
+      icon: '₿',
+      color: 'text-orange-500',
+    },
+    {
+      symbol: 'ETH',
+      name: '以太坊',
+      price: 3542,
+      change24h: -1.23,
+      icon: 'Ξ',
+      color: 'text-blue-500',
+    },
+    {
+      symbol: 'BNB',
+      name: 'BNB',
+      price: 692,
+      change24h: 0.87,
+      icon: '🟡',
+      color: 'text-yellow-500',
+    },
+    {
+      symbol: 'SOL',
+      name: 'Solana',
+      price: 238,
+      change24h: 4.56,
+      icon: '🟣',
+      color: 'text-purple-500',
+    },
   ]);
 
   const [currentPriceIndex, setCurrentPriceIndex] = useState(0);
@@ -31,11 +59,13 @@ export default function ChatCryptoWidget({ isMinimized = false, onToggle }: Cryp
   // 模拟价格更新
   useEffect(() => {
     const interval = setInterval(() => {
-      setCryptoPrices(prev => prev.map(crypto => ({
-        ...crypto,
-        price: crypto.price * (1 + (Math.random() - 0.5) * 0.002), // ±0.1% 随机变化
-        change24h: crypto.change24h + (Math.random() - 0.5) * 0.1
-      })));
+      setCryptoPrices((prev) =>
+        prev.map((crypto) => ({
+          ...crypto,
+          price: crypto.price * (1 + (Math.random() - 0.5) * 0.002), // ±0.1% 随机变化
+          change24h: crypto.change24h + (Math.random() - 0.5) * 0.1,
+        }))
+      );
     }, 3000);
 
     return () => clearInterval(interval);
@@ -44,7 +74,7 @@ export default function ChatCryptoWidget({ isMinimized = false, onToggle }: Cryp
   // 价格轮播
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentPriceIndex(prev => (prev + 1) % cryptoPrices.length);
+      setCurrentPriceIndex((prev) => (prev + 1) % cryptoPrices.length);
     }, 2000);
 
     return () => clearInterval(interval);
@@ -56,10 +86,7 @@ export default function ChatCryptoWidget({ isMinimized = false, onToggle }: Cryp
     return (
       <div className="bg-white border border-gray-200 rounded-lg shadow-sm">
         {/* 迷你价格显示 */}
-        <div 
-          className="p-3 cursor-pointer hover:bg-gray-50 transition-colors"
-          onClick={onToggle}
-        >
+        <div className="p-3 cursor-pointer hover:bg-gray-50 transition-colors" onClick={onToggle}>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <span className={`text-lg ${currentPrice.color}`}>{currentPrice.icon}</span>
@@ -72,8 +99,11 @@ export default function ChatCryptoWidget({ isMinimized = false, onToggle }: Cryp
               <div className="font-bold text-sm text-gray-900">
                 ${currentPrice.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}
               </div>
-              <div className={`text-xs ${currentPrice.change24h >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                {currentPrice.change24h >= 0 ? '+' : ''}{currentPrice.change24h.toFixed(2)}%
+              <div
+                className={`text-xs ${currentPrice.change24h >= 0 ? 'text-green-600' : 'text-red-600'}`}
+              >
+                {currentPrice.change24h >= 0 ? '+' : ''}
+                {currentPrice.change24h.toFixed(2)}%
               </div>
             </div>
           </div>
@@ -83,14 +113,17 @@ export default function ChatCryptoWidget({ isMinimized = false, onToggle }: Cryp
         <div className="border-t border-gray-100 px-3 py-2">
           <div className="flex space-x-4 text-xs">
             {cryptoPrices.map((crypto, index) => (
-              <div 
+              <div
                 key={crypto.symbol}
                 className={`flex items-center space-x-1 ${index === currentPriceIndex ? 'opacity-100' : 'opacity-60'}`}
               >
                 <span className={crypto.color}>{crypto.icon}</span>
-                <span className="font-medium">${crypto.price.toLocaleString(undefined, { maximumFractionDigits: 0 })}</span>
+                <span className="font-medium">
+                  ${crypto.price.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                </span>
                 <span className={crypto.change24h >= 0 ? 'text-green-600' : 'text-red-600'}>
-                  {crypto.change24h >= 0 ? '+' : ''}{crypto.change24h.toFixed(1)}%
+                  {crypto.change24h >= 0 ? '+' : ''}
+                  {crypto.change24h.toFixed(1)}%
                 </span>
               </div>
             ))}
@@ -109,12 +142,14 @@ export default function ChatCryptoWidget({ isMinimized = false, onToggle }: Cryp
             <span className="mr-2">📈</span>
             实时行情
           </h3>
-          <button
-            onClick={onToggle}
-            className="text-white hover:text-gray-200 transition-colors"
-          >
+          <button onClick={onToggle} className="text-white hover:text-gray-200 transition-colors">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
             </svg>
           </button>
         </div>
@@ -159,8 +194,11 @@ export default function ChatCryptoWidget({ isMinimized = false, onToggle }: Cryp
               <div className="font-bold text-gray-900">
                 ${crypto.price.toLocaleString(undefined, { maximumFractionDigits: 2 })}
               </div>
-              <div className={`text-sm ${crypto.change24h >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                {crypto.change24h >= 0 ? '+' : ''}{crypto.change24h.toFixed(2)}%
+              <div
+                className={`text-sm ${crypto.change24h >= 0 ? 'text-green-600' : 'text-red-600'}`}
+              >
+                {crypto.change24h >= 0 ? '+' : ''}
+                {crypto.change24h.toFixed(2)}%
               </div>
             </div>
           ))}

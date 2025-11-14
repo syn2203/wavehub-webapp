@@ -82,6 +82,3 @@ LIVEKIT_API_SECRET=your-api-secret
 ## 更多文档
 
 详细文档请查看 [LIVEKIT_SETUP.md](./LIVEKIT_SETUP.md)
-
-
-

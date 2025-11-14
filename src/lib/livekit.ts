@@ -60,8 +60,5 @@ export const ERROR_MESSAGES: Record<string, string> = {
   'device-not-found': '未找到音频设备，请检查麦克风是否正常连接',
   'room-full': '房间已满，无法加入',
   'invalid-token': '无效的访问令牌，请刷新页面重试',
-  'unknown': '发生未知错误，请稍后重试',
+  unknown: '发生未知错误，请稍后重试',
 };
-
-
-

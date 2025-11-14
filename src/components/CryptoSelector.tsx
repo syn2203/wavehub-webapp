@@ -31,7 +31,7 @@ export default function CryptoSelector() {
           <span className="text-green-500 mr-2">🎯</span>
           自定义币种图表
         </h3>
-        
+
         {/* 币种选择器 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
           {cryptoOptions.map((crypto) => (
@@ -52,7 +52,7 @@ export default function CryptoSelector() {
           ))}
         </div>
       </div>
-      
+
       {/* 选中的币种图表 */}
       <div className="p-4">
         <div className="mb-4 flex items-center justify-between">
@@ -60,7 +60,9 @@ export default function CryptoSelector() {
             <span className={`text-2xl ${selectedCrypto.color}`}>{selectedCrypto.icon}</span>
             <div>
               <h4 className="font-semibold text-gray-900">{selectedCrypto.name}</h4>
-              <p className="text-sm text-gray-500">{selectedCrypto.symbol.replace('BINANCE:', '')}</p>
+              <p className="text-sm text-gray-500">
+                {selectedCrypto.symbol.replace('BINANCE:', '')}
+              </p>
             </div>
           </div>
           <div className="text-right">
@@ -68,8 +70,8 @@ export default function CryptoSelector() {
             <p className="text-sm font-medium text-gray-700">Binance</p>
           </div>
         </div>
-        
-        <TradingViewWidget 
+
+        <TradingViewWidget
           symbol={selectedCrypto.symbol}
           height={400}
           theme="light"

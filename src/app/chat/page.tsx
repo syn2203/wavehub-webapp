@@ -56,7 +56,7 @@ export default function ChatPage() {
         avatar: '🤖',
         message: '欢迎来到 WaveHub 语音聊天室！',
         timestamp: new Date(now - 300000),
-        type: 'system'
+        type: 'system',
       },
       {
         id: '2',
@@ -65,7 +65,7 @@ export default function ChatPage() {
         avatar: '👨‍💼',
         message: '大家好！今天的会议开始了',
         timestamp: new Date(now - 240000),
-        type: 'text'
+        type: 'text',
       },
       {
         id: '3',
@@ -74,7 +74,7 @@ export default function ChatPage() {
         avatar: '👩‍💻',
         message: '我已经准备好了，可以开始讨论项目进度',
         timestamp: new Date(now - 180000),
-        type: 'text'
+        type: 'text',
       },
       {
         id: '4',
@@ -83,7 +83,7 @@ export default function ChatPage() {
         avatar: '👨‍🎨',
         message: '🎤 正在语音通话中...',
         timestamp: new Date(now - 120000),
-        type: 'audio'
+        type: 'audio',
       },
       {
         id: '5',
@@ -92,7 +92,7 @@ export default function ChatPage() {
         avatar: '👩‍💻',
         message: '大家看到比特币今天的走势了吗？涨了2.3%！',
         timestamp: new Date(now - 60000),
-        type: 'text'
+        type: 'text',
       },
       {
         id: '6',
@@ -101,8 +101,8 @@ export default function ChatPage() {
         avatar: '👨‍💼',
         message: '是的，整个加密货币市场都在上涨，以太坊也表现不错',
         timestamp: new Date(now - 30000),
-        type: 'text'
-      }
+        type: 'text',
+      },
     ];
   });
 
@@ -111,8 +111,22 @@ export default function ChatPage() {
     { id: '2', name: '李四', avatar: '👩‍💻', status: 'online', role: '前端开发', isListening: true },
     { id: '3', name: '王五', avatar: '👨‍🎨', status: 'online', role: 'UI设计师', isListening: false },
     { id: '4', name: '赵六', avatar: '👩‍🔬', status: 'away', role: '后端开发', isListening: false },
-    { id: '5', name: '孙七', avatar: '👨‍🏫', status: 'online', role: '测试工程师', isListening: true },
-    { id: '6', name: '周八', avatar: '👩‍💼', status: 'offline', role: '项目经理', isListening: false },
+    {
+      id: '5',
+      name: '孙七',
+      avatar: '👨‍🏫',
+      status: 'online',
+      role: '测试工程师',
+      isListening: true,
+    },
+    {
+      id: '6',
+      name: '周八',
+      avatar: '👩‍💼',
+      status: 'offline',
+      role: '项目经理',
+      isListening: false,
+    },
   ]);
 
   const [newMessage, setNewMessage] = useState('');
@@ -123,7 +137,7 @@ export default function ChatPage() {
   const [currentUser] = useState({
     id: 'current',
     name: '我',
-    avatar: '😊'
+    avatar: '😊',
   });
 
   // 生成语音房间名称
@@ -133,30 +147,30 @@ export default function ChatPage() {
   const getRoomInfo = () => {
     if (urlParams.section && urlParams.category) {
       const sectionNames: { [key: string]: string } = {
-        'meetings': '会议室',
-        'collaboration': '团队协作',
-        'education': '在线教育',
-        'community': '社区交流',
-        'innovation': '创新实验'
+        meetings: '会议室',
+        collaboration: '团队协作',
+        education: '在线教育',
+        community: '社区交流',
+        innovation: '创新实验',
       };
-      
+
       return {
         title: `${sectionNames[urlParams.section] || urlParams.section} - ${urlParams.category}`,
         description: `专注于${urlParams.category}的语音协作和交流分享`,
         participantCount: users.length + 1,
-        onlineCount: users.filter(u => u.status === 'online').length + 1,
+        onlineCount: users.filter((u) => u.status === 'online').length + 1,
         roomId: `${urlParams.section}-${urlParams.category.toLowerCase().replace(/\s+/g, '-')}`,
-        createdAt: new Date('2024-01-15T10:00:00Z')
+        createdAt: new Date('2024-01-15T10:00:00Z'),
       };
     }
-    
+
     return {
       title: 'WaveHub 语音聊天室',
       description: 'AI驱动的实时语音协作平台，支持高质量语音通话和智能功能',
       participantCount: users.length + 1,
-      onlineCount: users.filter(u => u.status === 'online').length + 1,
+      onlineCount: users.filter((u) => u.status === 'online').length + 1,
       roomId: 'wavehub-main-room',
-      createdAt: new Date('2024-01-15T10:00:00Z')
+      createdAt: new Date('2024-01-15T10:00:00Z'),
     };
   };
 
@@ -177,10 +191,10 @@ export default function ChatPage() {
           avatar: '🤖',
           message: `欢迎来到${urlParams.category}协作空间！在这里您可以与团队成员进行高质量的语音协作和交流。`,
           timestamp: new Date(),
-          type: 'system'
+          type: 'system',
         };
-        
-        setMessages(prev => [...prev, welcomeMessage]);
+
+        setMessages((prev) => [...prev, welcomeMessage]);
       }, 0);
 
       return () => clearTimeout(timer);
@@ -215,14 +229,14 @@ export default function ChatPage() {
         '大家觉得现在适合入场吗？',
         '刚才看了TradingView的图表分析',
         '加密货币市场真是变化莫测',
-        '我设置了价格提醒，到时候通知大家'
+        '我设置了价格提醒，到时候通知大家',
       ];
-      
-      const randomUsers = users.filter(u => u.status === 'online');
+
+      const randomUsers = users.filter((u) => u.status === 'online');
       if (randomUsers.length > 0 && Math.random() > 0.7) {
         const randomUser = randomUsers[Math.floor(Math.random() * randomUsers.length)];
         const randomMessage = randomMessages[Math.floor(Math.random() * randomMessages.length)];
-        
+
         const newMsg: ChatMessage = {
           id: Date.now().toString(),
           userId: randomUser.id,
@@ -230,10 +244,10 @@ export default function ChatPage() {
           avatar: randomUser.avatar,
           message: randomMessage,
           timestamp: new Date(),
-          type: 'text'
+          type: 'text',
         };
-        
-        setMessages(prev => [...prev, newMsg]);
+
+        setMessages((prev) => [...prev, newMsg]);
       }
     }, 8000);
 
@@ -250,10 +264,10 @@ export default function ChatPage() {
       avatar: currentUser.avatar,
       message: newMessage,
       timestamp: new Date(),
-      type: 'text'
+      type: 'text',
     };
 
-    setMessages(prev => [...prev, message]);
+    setMessages((prev) => [...prev, message]);
     setNewMessage('');
   };
 
@@ -263,17 +277,21 @@ export default function ChatPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'online': return 'bg-green-500';
-      case 'away': return 'bg-yellow-500';
-      case 'offline': return 'bg-gray-400';
-      default: return 'bg-gray-400';
+      case 'online':
+        return 'bg-green-500';
+      case 'away':
+        return 'bg-yellow-500';
+      case 'offline':
+        return 'bg-gray-400';
+      default:
+        return 'bg-gray-400';
     }
   };
 
   const formatTime = (date: Date) => {
-    return date.toLocaleTimeString('zh-CN', { 
-      hour: '2-digit', 
-      minute: '2-digit' 
+    return date.toLocaleTimeString('zh-CN', {
+      hour: '2-digit',
+      minute: '2-digit',
     });
   };
 
@@ -283,29 +301,42 @@ export default function ChatPage() {
         {/* 头部导航 */}
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center space-x-4">
-            <Link 
+            <Link
               href="/"
               className="flex items-center space-x-2 text-blue-600 hover:text-blue-800 transition-colors"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 19l-7-7 7-7"
+                />
               </svg>
               <span>返回主页</span>
             </Link>
             <div className="h-6 w-px bg-gray-300" />
-            
+
             {/* 面包屑导航 */}
             <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <Link href="/" className="hover:text-blue-600 transition-colors">WaveHub</Link>
+              <Link href="/" className="hover:text-blue-600 transition-colors">
+                WaveHub
+              </Link>
               {urlParams.section && (
                 <>
                   <span>/</span>
                   <span className="text-gray-400">
-                    {urlParams.section === 'meetings' ? '会议室' :
-                     urlParams.section === 'collaboration' ? '团队协作' :
-                     urlParams.section === 'education' ? '在线教育' :
-                     urlParams.section === 'community' ? '社区交流' :
-                     urlParams.section === 'innovation' ? '创新实验' : urlParams.section}
+                    {urlParams.section === 'meetings'
+                      ? '会议室'
+                      : urlParams.section === 'collaboration'
+                        ? '团队协作'
+                        : urlParams.section === 'education'
+                          ? '在线教育'
+                          : urlParams.section === 'community'
+                            ? '社区交流'
+                            : urlParams.section === 'innovation'
+                              ? '创新实验'
+                              : urlParams.section}
                   </span>
                 </>
               )}
@@ -316,17 +347,17 @@ export default function ChatPage() {
                 </>
               )}
             </div>
-            
+
             <h1 className="text-2xl font-bold text-gray-900 flex items-center">
               <span className="text-blue-600 mr-2">🎙️</span>
               {roomInfo.title}
             </h1>
           </div>
-          
+
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2 text-sm text-gray-600">
               <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
-              <span>{users.filter(u => u.status === 'online').length} 人在线</span>
+              <span>{users.filter((u) => u.status === 'online').length} 人在线</span>
             </div>
             {/* 语音房间按钮 */}
             <button
@@ -348,7 +379,12 @@ export default function ChatPage() {
               className="flex items-center space-x-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-lg hover:from-blue-600 hover:to-purple-700 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"
+                />
               </svg>
               <span className="font-medium">分享</span>
             </button>
@@ -357,7 +393,7 @@ export default function ChatPage() {
 
         {/* 加密货币行情区域 */}
         <div className="mb-6">
-          <ChatCryptoWidget 
+          <ChatCryptoWidget
             isMinimized={isCryptoMinimized}
             onToggle={() => setIsCryptoMinimized(!isCryptoMinimized)}
           />
@@ -388,25 +424,20 @@ export default function ChatPage() {
                   <button
                     onClick={toggleListening}
                     className={`px-3 py-1 rounded-full text-sm font-medium transition-colors ${
-                      isListening 
-                        ? 'bg-green-100 text-green-700 border border-green-300' 
+                      isListening
+                        ? 'bg-green-100 text-green-700 border border-green-300'
                         : 'bg-gray-100 text-gray-700 border border-gray-300'
                     }`}
                   >
                     {isListening ? '🔊 正在收听' : '🔇 静音'}
                   </button>
-                  <span className="text-xs text-gray-500">
-                    {messages.length} 条消息
-                  </span>
+                  <span className="text-xs text-gray-500">{messages.length} 条消息</span>
                 </div>
               </div>
             </div>
 
             {/* 消息列表 */}
-            <div 
-              ref={chatContainerRef}
-              className="h-96 overflow-y-auto p-4 space-y-4"
-            >
+            <div ref={chatContainerRef} className="h-96 overflow-y-auto p-4 space-y-4">
               {messages.map((message) => (
                 <div key={message.id} className="flex items-start space-x-3">
                   <div className="flex-shrink-0">
@@ -429,13 +460,15 @@ export default function ChatPage() {
                         </span>
                       )}
                     </div>
-                    <div className={`p-3 rounded-lg ${
-                      message.userId === currentUser.id 
-                        ? 'bg-blue-500 text-white ml-8' 
-                        : message.type === 'system'
-                        ? 'bg-gray-100 text-gray-700'
-                        : 'bg-gray-100 text-gray-900'
-                    }`}>
+                    <div
+                      className={`p-3 rounded-lg ${
+                        message.userId === currentUser.id
+                          ? 'bg-blue-500 text-white ml-8'
+                          : message.type === 'system'
+                            ? 'bg-gray-100 text-gray-700'
+                            : 'bg-gray-100 text-gray-900'
+                      }`}
+                    >
                       {message.message}
                     </div>
                   </div>
@@ -462,9 +495,7 @@ export default function ChatPage() {
                 >
                   发送
                 </button>
-                <button className="btn-secondary px-4 py-2">
-                  🎤
-                </button>
+                <button className="btn-secondary px-4 py-2">🎤</button>
               </div>
             </div>
           </div>
@@ -474,19 +505,24 @@ export default function ChatPage() {
             <div className="p-4 bg-gray-50 border-b">
               <h2 className="font-semibold text-gray-900 flex items-center">
                 <span className="text-blue-500 mr-2">👥</span>
-                在线用户 ({users.filter(u => u.status === 'online').length})
+                在线用户 ({users.filter((u) => u.status === 'online').length})
               </h2>
             </div>
 
             <div className="p-4 space-y-3 max-h-96 overflow-y-auto">
               {users.map((user) => (
-                <div key={user.id} className="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                <div
+                  key={user.id}
+                  className="flex items-center p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                >
                   <div className="relative">
                     <div className="w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white text-lg">
                       {user.avatar}
                     </div>
                     {/* 状态指示器 */}
-                    <div className={`absolute -bottom-1 -right-1 w-4 h-4 ${getStatusColor(user.status)} rounded-full border-2 border-white`}></div>
+                    <div
+                      className={`absolute -bottom-1 -right-1 w-4 h-4 ${getStatusColor(user.status)} rounded-full border-2 border-white`}
+                    ></div>
                     {/* 收听状态 */}
                     {user.isListening && user.status === 'online' && (
                       <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
@@ -494,7 +530,7 @@ export default function ChatPage() {
                       </div>
                     )}
                   </div>
-                  
+
                   <div className="ml-3 flex-1 min-w-0">
                     <div className="flex items-center justify-between">
                       <h3 className="font-medium text-gray-900 truncate">{user.name}</h3>
@@ -520,10 +556,25 @@ export default function ChatPage() {
                 </h4>
                 <div className="space-y-2">
                   {[
-                    { symbol: 'BTC', price: 95420, change: 2.34, icon: '₿', color: 'text-orange-500' },
-                    { symbol: 'ETH', price: 3542, change: -1.23, icon: 'Ξ', color: 'text-blue-500' }
+                    {
+                      symbol: 'BTC',
+                      price: 95420,
+                      change: 2.34,
+                      icon: '₿',
+                      color: 'text-orange-500',
+                    },
+                    {
+                      symbol: 'ETH',
+                      price: 3542,
+                      change: -1.23,
+                      icon: 'Ξ',
+                      color: 'text-blue-500',
+                    },
                   ].map((crypto) => (
-                    <div key={crypto.symbol} className="flex items-center justify-between p-2 bg-gray-50 rounded">
+                    <div
+                      key={crypto.symbol}
+                      className="flex items-center justify-between p-2 bg-gray-50 rounded"
+                    >
                       <div className="flex items-center space-x-2">
                         <span className={`text-sm ${crypto.color}`}>{crypto.icon}</span>
                         <span className="text-xs font-medium text-gray-900">{crypto.symbol}</span>
@@ -532,14 +583,17 @@ export default function ChatPage() {
                         <div className="text-xs font-bold text-gray-900">
                           ${crypto.price.toLocaleString()}
                         </div>
-                        <div className={`text-xs ${crypto.change >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                          {crypto.change >= 0 ? '+' : ''}{crypto.change}%
+                        <div
+                          className={`text-xs ${crypto.change >= 0 ? 'text-green-600' : 'text-red-600'}`}
+                        >
+                          {crypto.change >= 0 ? '+' : ''}
+                          {crypto.change}%
                         </div>
                       </div>
                     </div>
                   ))}
                 </div>
-                <button 
+                <button
                   onClick={() => setIsCryptoMinimized(false)}
                   className="w-full mt-2 py-1 px-2 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors"
                 >
@@ -554,14 +608,14 @@ export default function ChatPage() {
                 <button
                   onClick={toggleListening}
                   className={`w-full py-2 px-4 rounded-lg font-medium transition-colors ${
-                    isListening 
-                      ? 'bg-red-500 text-white hover:bg-red-600' 
+                    isListening
+                      ? 'bg-red-500 text-white hover:bg-red-600'
                       : 'bg-green-500 text-white hover:bg-green-600'
                   }`}
                 >
                   {isListening ? '🔇 停止收听' : '🔊 开始收听'}
                 </button>
-                
+
                 <div className="text-center">
                   <div className="text-xs text-gray-500 mb-1">音频质量</div>
                   <div className="flex items-center justify-center space-x-1">
@@ -569,9 +623,7 @@ export default function ChatPage() {
                       <div
                         key={level}
                         className={`w-2 h-4 rounded-sm ${
-                          isListening && level <= 4 
-                            ? 'bg-green-500' 
-                            : 'bg-gray-300'
+                          isListening && level <= 4 ? 'bg-green-500' : 'bg-gray-300'
                         }`}
                       />
                     ))}

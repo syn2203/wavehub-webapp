@@ -25,7 +25,7 @@ export default function ChatRoomStatus() {
         totalUsers: 12,
         lastActivity: new Date(now),
         topic: '项目讨论 - WaveHub 功能开发',
-        isActive: true
+        isActive: true,
       },
       {
         id: 'dev',
@@ -34,7 +34,7 @@ export default function ChatRoomStatus() {
         totalUsers: 8,
         lastActivity: new Date(now - 300000), // 5分钟前
         topic: '技术讨论 - API 设计',
-        isActive: true
+        isActive: true,
       },
       {
         id: 'design',
@@ -43,8 +43,8 @@ export default function ChatRoomStatus() {
         totalUsers: 5,
         lastActivity: new Date(now - 600000), // 10分钟前
         topic: 'UI/UX 评审',
-        isActive: false
-      }
+        isActive: false,
+      },
     ];
   });
 
@@ -60,7 +60,7 @@ export default function ChatRoomStatus() {
 
   const getTimeAgo = (date: Date) => {
     const diff = Math.floor((currentTime.getTime() - date.getTime()) / 1000);
-    
+
     if (diff < 60) return '刚刚';
     if (diff < 3600) return `${Math.floor(diff / 60)}分钟前`;
     if (diff < 86400) return `${Math.floor(diff / 3600)}小时前`;
@@ -79,19 +79,21 @@ export default function ChatRoomStatus() {
 
       <div className="p-4 space-y-4">
         {chatRooms.map((room) => (
-          <div 
+          <div
             key={room.id}
             className={`p-4 rounded-lg border-2 transition-all duration-200 ${
-              room.isActive 
-                ? 'border-green-200 bg-green-50 hover:bg-green-100' 
+              room.isActive
+                ? 'border-green-200 bg-green-50 hover:bg-green-100'
                 : 'border-gray-200 bg-gray-50 hover:bg-gray-100'
             }`}
           >
             <div className="flex items-center justify-between mb-2">
               <div className="flex items-center space-x-2">
-                <div className={`w-3 h-3 rounded-full ${
-                  room.isActive ? 'bg-green-500 animate-pulse' : 'bg-gray-400'
-                }`} />
+                <div
+                  className={`w-3 h-3 rounded-full ${
+                    room.isActive ? 'bg-green-500 animate-pulse' : 'bg-gray-400'
+                  }`}
+                />
                 <h4 className="font-medium text-gray-900">{room.name}</h4>
                 {room.isActive && (
                   <span className="px-2 py-1 text-xs bg-green-100 text-green-800 rounded-full">
@@ -109,15 +111,11 @@ export default function ChatRoomStatus() {
 
             <div className="mb-3">
               <div className="text-sm text-gray-700 mb-1">当前话题:</div>
-              <div className="text-sm text-gray-600 bg-white p-2 rounded border">
-                {room.topic}
-              </div>
+              <div className="text-sm text-gray-600 bg-white p-2 rounded border">{room.topic}</div>
             </div>
 
             <div className="flex items-center justify-between">
-              <div className="text-xs text-gray-500">
-                最后活跃: {getTimeAgo(room.lastActivity)}
-              </div>
+              <div className="text-xs text-gray-500">最后活跃: {getTimeAgo(room.lastActivity)}</div>
               <Link
                 href="/chat"
                 className={`px-3 py-1 rounded text-sm font-medium transition-colors ${
@@ -143,14 +141,12 @@ export default function ChatRoomStatus() {
             </div>
             <div>
               <div className="text-2xl font-bold text-green-600">
-                {chatRooms.filter(room => room.isActive).length}
+                {chatRooms.filter((room) => room.isActive).length}
               </div>
               <div className="text-xs text-gray-600">活跃房间</div>
             </div>
             <div>
-              <div className="text-2xl font-bold text-purple-600">
-                {chatRooms.length}
-              </div>
+              <div className="text-2xl font-bold text-purple-600">{chatRooms.length}</div>
               <div className="text-xs text-gray-600">总房间数</div>
             </div>
           </div>
@@ -158,15 +154,10 @@ export default function ChatRoomStatus() {
 
         {/* 操作按钮 */}
         <div className="mt-4 space-y-2">
-          <Link
-            href="/chat"
-            className="w-full btn-primary py-3 text-center block"
-          >
+          <Link href="/chat" className="w-full btn-primary py-3 text-center block">
             🚀 快速加入主聊天室
           </Link>
-          <button className="w-full btn-secondary py-2">
-            ⚙️ 创建新房间
-          </button>
+          <button className="w-full btn-secondary py-2">⚙️ 创建新房间</button>
         </div>
 
         {/* 提示信息 */}

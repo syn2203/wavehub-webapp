@@ -44,6 +44,7 @@ docker run --rm -p 7880:7880 \
 ```
 
 本地部署后的配置：
+
 - WebSocket URL: `ws://localhost:7880`
 - API Key: `devkey`
 - API Secret: `secret`
@@ -60,6 +61,7 @@ LIVEKIT_API_SECRET=your-api-secret
 ```
 
 **注意：**
+
 - `LIVEKIT_URL` 必须以 `NEXT_PUBLIC_` 开头，因为它会在客户端使用
 - `LIVEKIT_API_KEY` 和 `LIVEKIT_API_SECRET` 仅在服务端使用，不会暴露到客户端
 
@@ -158,6 +160,7 @@ npm run dev
 **问题：** 点击"加入房间"后一直显示"连接中..."
 
 **解决方案：**
+
 - 检查 `.env.local` 文件是否正确配置
 - 确认 LiveKit Server 是否正常运行
 - 检查浏览器控制台是否有错误信息
@@ -168,6 +171,7 @@ npm run dev
 **问题：** 提示"麦克风权限被拒绝"
 
 **解决方案：**
+
 - 点击浏览器地址栏的锁图标
 - 找到"麦克风"权限设置
 - 选择"允许"
@@ -178,6 +182,7 @@ npm run dev
 **问题：** 可以看到其他人在说话，但听不到声音
 
 **解决方案：**
+
 - 检查扬声器按钮是否为绿色（未静音）
 - 确认系统音量未静音
 - 检查浏览器是否允许自动播放音频
@@ -188,6 +193,7 @@ npm run dev
 **问题：** 音频质量不佳或延迟明显
 
 **解决方案：**
+
 - 切换到"省流模式"减少带宽占用
 - 检查网络连接质量
 - 关闭其他占用带宽的应用
@@ -198,6 +204,7 @@ npm run dev
 **问题：** 控制台显示 CORS 相关错误
 
 **解决方案：**
+
 - 确认使用的是 `ws://localhost:7880` 而不是 `wss://`
 - 检查 LiveKit Server 是否使用 `--dev` 参数启动
 - 如果使用 LiveKit Cloud，确认域名已添加到允许列表
@@ -208,7 +215,7 @@ npm run dev
 
 ```typescript
 interface VoiceRoomProps {
-  roomName: string;        // 房间名称（唯一标识）
+  roomName: string; // 房间名称（唯一标识）
   participantName: string; // 参与者名称
   onDisconnect?: () => void; // 断开连接回调
 }
@@ -216,7 +223,6 @@ interface VoiceRoomProps {
 
 ### Token API 请求格式
 
-```typescript
 POST /api/livekit/token
 
 Body:
@@ -265,6 +271,7 @@ Response:
 ## 🤝 支持
 
 如有问题或建议，请：
+
 1. 查看本文档的常见问题部分
 2. 查阅 LiveKit 官方文档
 3. 检查浏览器控制台错误信息
@@ -273,6 +280,3 @@ Response:
 ---
 
 **注意：** 本项目使用的是 LiveKit 开源版本，商业使用请遵守相关许可协议。
-
-
-

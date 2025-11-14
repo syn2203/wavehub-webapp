@@ -24,7 +24,7 @@ interface VoiceChatTopic {
 export default function TrendingVoiceChat() {
   const [currentTime, setCurrentTime] = useState(() => new Date());
   const [playingId, setPlayingId] = useState<string | null>(null);
-  
+
   const [trendingTopics] = useState<VoiceChatTopic[]>(() => {
     const now = Date.now();
     return [
@@ -41,7 +41,7 @@ export default function TrendingVoiceChat() {
         comments: 89,
         tags: ['AI', 'ChatGPT', '未来工作', '技术革命'],
         createdAt: new Date(now - 1800000), // 30分钟前
-        thumbnail: '🤖'
+        thumbnail: '🤖',
       },
       {
         id: '2',
@@ -56,7 +56,7 @@ export default function TrendingVoiceChat() {
         comments: 67,
         tags: ['新能源', '特斯拉', '比亚迪', '投资分析'],
         createdAt: new Date(now - 3600000), // 1小时前
-        thumbnail: '🚗'
+        thumbnail: '🚗',
       },
       {
         id: '3',
@@ -71,7 +71,7 @@ export default function TrendingVoiceChat() {
         comments: 156,
         tags: ['元宇宙', 'VR', 'AR', '科技趋势'],
         createdAt: new Date(now - 900000), // 15分钟前
-        thumbnail: '🌐'
+        thumbnail: '🌐',
       },
       {
         id: '4',
@@ -86,7 +86,7 @@ export default function TrendingVoiceChat() {
         comments: 45,
         tags: ['远程工作', '团队协作', '效率提升', '管理'],
         createdAt: new Date(now - 7200000), // 2小时前
-        thumbnail: '💼'
+        thumbnail: '💼',
       },
       {
         id: '5',
@@ -101,8 +101,8 @@ export default function TrendingVoiceChat() {
         comments: 78,
         tags: ['加密货币', '监管政策', '金融', '市场分析'],
         createdAt: new Date(now - 5400000), // 1.5小时前
-        thumbnail: '💰'
-      }
+        thumbnail: '💰',
+      },
     ];
   });
 
@@ -116,7 +116,7 @@ export default function TrendingVoiceChat() {
 
   const getTimeAgo = (date: Date) => {
     const diff = Math.floor((currentTime.getTime() - date.getTime()) / 1000);
-    
+
     if (diff < 60) return '刚刚';
     if (diff < 3600) return `${Math.floor(diff / 60)}分钟前`;
     if (diff < 86400) return `${Math.floor(diff / 3600)}小时前`;
@@ -125,11 +125,11 @@ export default function TrendingVoiceChat() {
 
   const getCategoryColor = (category: string) => {
     const colors: { [key: string]: string } = {
-      '科技前沿': 'bg-blue-100 text-blue-700',
-      '财经观察': 'bg-green-100 text-green-700',
-      '科技趋势': 'bg-purple-100 text-purple-700',
-      '职场话题': 'bg-orange-100 text-orange-700',
-      '金融政策': 'bg-red-100 text-red-700'
+      科技前沿: 'bg-blue-100 text-blue-700',
+      财经观察: 'bg-green-100 text-green-700',
+      科技趋势: 'bg-purple-100 text-purple-700',
+      职场话题: 'bg-orange-100 text-orange-700',
+      金融政策: 'bg-red-100 text-red-700',
     };
     return colors[category] || 'bg-gray-100 text-gray-700';
   };
@@ -158,7 +158,7 @@ export default function TrendingVoiceChat() {
             <p className="text-sm text-gray-500">热门话题语音讨论</p>
           </div>
         </div>
-        <Link 
+        <Link
           href="/trending-voice"
           className="text-sm text-blue-600 hover:text-blue-700 font-medium"
         >
@@ -168,7 +168,7 @@ export default function TrendingVoiceChat() {
 
       <div className="space-y-4">
         {trendingTopics.slice(0, 4).map((topic, index) => (
-          <div 
+          <div
             key={topic.id}
             className="p-4 bg-gradient-to-r from-gray-50 to-white rounded-xl border border-gray-100 hover:shadow-md transition-all duration-200 group"
           >
@@ -195,11 +195,13 @@ export default function TrendingVoiceChat() {
                   </div>
                 )}
               </div>
-              
+
               <div className="flex-1 min-w-0">
                 {/* 标题和分类 */}
                 <div className="flex items-center space-x-2 mb-2">
-                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(topic.category)}`}>
+                  <span
+                    className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(topic.category)}`}
+                  >
                     {topic.category}
                   </span>
                   <span className="text-xs text-gray-500">#{index + 1}</span>
@@ -211,7 +213,7 @@ export default function TrendingVoiceChat() {
                   )}
                 </div>
 
-                <Link 
+                <Link
                   href={`/voice-chat/${topic.id}`}
                   className="block group-hover:text-blue-600 transition-colors"
                 >
@@ -220,17 +222,12 @@ export default function TrendingVoiceChat() {
                   </h4>
                 </Link>
 
-                <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                  {topic.description}
-                </p>
+                <p className="text-sm text-gray-600 mb-3 line-clamp-2">{topic.description}</p>
 
                 {/* 标签 */}
                 <div className="flex flex-wrap gap-1 mb-3">
                   {topic.tags.slice(0, 3).map((tag) => (
-                    <span 
-                      key={tag}
-                      className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs"
-                    >
+                    <span key={tag} className="px-2 py-1 bg-gray-100 text-gray-600 rounded text-xs">
                       #{tag}
                     </span>
                   ))}
@@ -276,7 +273,7 @@ export default function TrendingVoiceChat() {
                         className="w-1 bg-blue-600 rounded-full animate-pulse"
                         style={{
                           height: `${Math.random() * 16 + 8}px`,
-                          animationDelay: `${i * 0.1}s`
+                          animationDelay: `${i * 0.1}s`,
                         }}
                       />
                     ))}
@@ -293,7 +290,7 @@ export default function TrendingVoiceChat() {
         <div className="grid grid-cols-3 gap-4 text-center">
           <div>
             <div className="text-lg font-bold text-red-600">
-              {trendingTopics.filter(t => t.isLive).length}
+              {trendingTopics.filter((t) => t.isLive).length}
             </div>
             <div className="text-xs text-gray-500">直播中</div>
           </div>
@@ -314,16 +311,10 @@ export default function TrendingVoiceChat() {
 
       {/* 行动按钮 */}
       <div className="mt-4 grid grid-cols-2 gap-3">
-        <Link
-          href="/voice-chat/create"
-          className="btn-primary py-3 text-center"
-        >
+        <Link href="/voice-chat/create" className="btn-primary py-3 text-center">
           🎙️ 发起语聊
         </Link>
-        <Link
-          href="/trending-voice"
-          className="btn-secondary py-3 text-center"
-        >
+        <Link href="/trending-voice" className="btn-secondary py-3 text-center">
           🔥 更多热点
         </Link>
       </div>
