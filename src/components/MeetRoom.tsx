@@ -12,6 +12,24 @@ interface MeetRoomProps {
   enableVideo?: boolean
 }
 
+// 检查是否在安全上下文中（HTTPS 或 localhost）
+function isSecureContext(): boolean {
+  if (typeof window === 'undefined') return true
+  return (
+    window.isSecureContext ||
+    window.location.protocol === 'https:' ||
+    window.location.hostname === 'localhost' ||
+    window.location.hostname === '127.0.0.1' ||
+    window.location.hostname === '[::1]'
+  )
+}
+
+// 检查媒体设备是否可用
+function isMediaDevicesAvailable(): boolean {
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') return false
+  return !!(navigator.mediaDevices && navigator.mediaDevices.enumerateDevices)
+}
+
 export default function MeetRoom({
   roomName,
   participantName,
@@ -25,9 +43,24 @@ export default function MeetRoom({
   const [isVideoEnabled, setIsVideoEnabled] = useState(enableVideo)
   const [isAudioEnabled, setIsAudioEnabled] = useState(true)
 
-  // 获取 LiveKit 配置和访问令牌
+  // 检查安全上下文和媒体设备可用性，然后获取 token
   useEffect(() => {
-    // 获取访问令牌（API 会返回 token 和 url）
+    // 先检查安全上下文
+    if (!isSecureContext()) {
+      setError(
+        '访问摄像头和麦克风需要安全连接（HTTPS）。请使用 HTTPS 访问此页面，或在 localhost 上运行。'
+      )
+      return
+    }
+
+    if (!isMediaDevicesAvailable()) {
+      setError(
+        '您的浏览器不支持媒体设备访问，或当前环境不安全。请使用现代浏览器（Chrome、Firefox、Safari、Edge）并通过 HTTPS 访问。'
+      )
+      return
+    }
+
+    // 安全上下文检查通过后，获取访问令牌
     const fetchToken = async () => {
       setIsConnecting(true)
       setError(null)
@@ -54,12 +87,12 @@ export default function MeetRoom({
         }
 
         const data = await response.json()
-        
+
         // 从 API 响应中获取 URL 和 token
         if (!data.url) {
           throw new Error('服务器未返回 LiveKit URL，请检查服务端配置')
         }
-        
+
         if (!data.token) {
           throw new Error('服务器未返回访问令牌')
         }
@@ -86,19 +119,55 @@ export default function MeetRoom({
   }, [onDisconnect])
 
   if (error) {
+    const isSecurityError = error.includes('HTTPS') || error.includes('安全')
     return (
       <div className='bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-700 p-6'>
         <div className='flex items-center space-x-3 text-red-400 mb-4'>
           <Settings className='w-6 h-6' />
-          <h3 className='text-xl font-bold'>连接错误</h3>
+          <h3 className='text-xl font-bold'>{isSecurityError ? '安全上下文错误' : '连接错误'}</h3>
         </div>
-        <p className='text-gray-300 mb-4'>{error}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors'
-        >
-          重新加载
-        </button>
+        <div className='text-gray-300 mb-4 space-y-2'>
+          <p>{error}</p>
+          {isSecurityError && (
+            <div className='mt-4 p-4 bg-blue-900/30 border border-blue-700 rounded-lg'>
+              <p className='text-sm text-blue-200 mb-2 font-semibold'>解决方案：</p>
+              <ul className='text-sm text-blue-200 space-y-1 list-disc list-inside'>
+                <li>
+                  开发环境：使用 <code className='bg-gray-700 px-1 rounded'>localhost</code> 访问
+                </li>
+                <li>
+                  生产环境：使用 HTTPS 协议（
+                  <code className='bg-gray-700 px-1 rounded'>https://</code>）
+                </li>
+                <li>
+                  本地测试：运行 <code className='bg-gray-700 px-1 rounded'>npm run dev</code>{' '}
+                  并通过 <code className='bg-gray-700 px-1 rounded'>http://localhost:3000</code>{' '}
+                  访问
+                </li>
+              </ul>
+            </div>
+          )}
+        </div>
+        <div className='flex space-x-3'>
+          <button
+            onClick={() => window.location.reload()}
+            className='px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors'
+          >
+            重新加载
+          </button>
+          {isSecurityError && (
+            <button
+              onClick={() => {
+                if (window.location.protocol === 'http:') {
+                  window.location.href = window.location.href.replace('http:', 'https:')
+                }
+              }}
+              className='px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors'
+            >
+              尝试切换到 HTTPS
+            </button>
+          )}
+        </div>
       </div>
     )
   }
