@@ -10,6 +10,8 @@ import {
   ConnectionState,
   RoomConnectOptions
 } from 'livekit-client'
+import { RoomAudioRenderer } from '@livekit/components-react'
+import '@livekit/components-styles'
 import {
   Mic,
   MicOff,
@@ -50,8 +52,6 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
   // 音频控制状态
   const [isMicEnabled, setIsMicEnabled] = useState(false)
   const [isSpeakerEnabled, setIsSpeakerEnabled] = useState(true)
-  const [audioPlaybackReady, setAudioPlaybackReady] = useState(false)
-  const [needsAudioStart, setNeedsAudioStart] = useState(false)
 
   // 参与者列表
   const [participants, setParticipants] = useState<ParticipantInfo[]>([])
@@ -67,28 +67,6 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
     activeSpeakers: 0
   })
 
-  /**
-   * 手动/自动尝试开启音频播放，处理浏览器自动播放限制
-   */
-  const startAudioPlayback = useCallback(async () => {
-    if (!room) return false
-
-    try {
-      await room.startAudio()
-      setAudioPlaybackReady(true)
-      setNeedsAudioStart(false)
-      if (error === ERROR_MESSAGES['audio-blocked']) {
-        setError(null)
-      }
-      return true
-    } catch (err) {
-      console.error('Failed to start audio playback:', err)
-      setAudioPlaybackReady(false)
-      setNeedsAudioStart(true)
-      setError(ERROR_MESSAGES['audio-blocked'] || '浏览器阻止了音频播放，请手动启用')
-      return false
-    }
-  }, [room, error])
 
   /**
    * 连接到 LiveKit 房间
@@ -138,15 +116,22 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
       console.log('✅ 成功连接到房间:', room.name, responseDate)
       setIsConnected(true)
 
-      // 尝试立即开启音频播放，如果浏览器阻止则提示用户手动开启
-      await startAudioPlayback()
+      // 启动音频播放（类似 MeetRoom 的 RoomAudioRenderer）
+      // room.startAudio() 会自动处理远程音频轨道的播放
+      try {
+        await room.startAudio()
+        console.log('✅ 音频播放已启动')
+      } catch (err) {
+        console.warn('⚠️ 音频播放启动失败（可能被浏览器阻止）:', err)
+        // 不显示错误，因为后续轨道订阅时会自动重试
+      }
     } catch (err: any) {
       console.error('❌ 连接房间失败:', err)
       setError(ERROR_MESSAGES['connection-failed'] || err.message || '连接失败，请检查网络和配置')
     } finally {
       setIsConnecting(false)
     }
-  }, [room, roomName, participantName, isConnecting, isConnected, startAudioPlayback])
+      }, [room, roomName, participantName, isConnecting, isConnected])
 
   /**
    * 断开连接
@@ -160,9 +145,6 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
       setIsMicEnabled(false)
       setParticipants([])
       setLocalParticipant(null)
-
-      setAudioPlaybackReady(false)
-      setNeedsAudioStart(false)
 
       if (onDisconnect) {
         onDisconnect()
@@ -214,21 +196,15 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
 
   /**
    * 切换扬声器（静音/取消静音所有远程音频）
+   * RoomAudioRenderer 会自动处理音频播放，这里只需要控制静音状态
    */
   const toggleSpeaker = useCallback(async () => {
     if (!room) return
 
     const enabled = !isSpeakerEnabled
 
-    // 当用户重新打开扬声器时尝试启动音频播放
-    if (enabled && !audioPlaybackReady) {
-      const started = await startAudioPlayback()
-      if (!started) {
-        return
-      }
-    }
-
     // 静音/取消静音所有远程参与者的音频元素
+    // RoomAudioRenderer 创建的音频元素会被附加到轨道上
     room.remoteParticipants.forEach(participant => {
       participant.audioTrackPublications.forEach(publication => {
         if (publication.track && publication.track.attachedElements.length > 0) {
@@ -242,7 +218,7 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
     })
 
     setIsSpeakerEnabled(enabled)
-  }, [room, isSpeakerEnabled, audioPlaybackReady, startAudioPlayback])
+  }, [room, isSpeakerEnabled])
 
   /**
    * 切换音频设备
@@ -406,13 +382,9 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
       updateParticipants()
     }
 
+    // 音频播放状态变化（RoomAudioRenderer 会自动处理，这里只做日志记录）
     const handleAudioPlaybackChanged = (canPlayback: boolean) => {
       console.log('Audio playback status:', canPlayback)
-      setAudioPlaybackReady(canPlayback)
-      setNeedsAudioStart(!canPlayback)
-      if (!canPlayback) {
-        setError(ERROR_MESSAGES['audio-blocked'] || '浏览器阻止了音频播放，请手动启用')
-      }
     }
 
     // 连接质量变化
@@ -501,6 +473,7 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
 
     return () => clearInterval(interval)
   }, [isConnected, updateParticipants])
+
 
   /**
    * 渲染参与者卡片
@@ -601,19 +574,6 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
         </div>
       )}
 
-      {needsAudioStart && (
-        <div className='mb-4 p-3 bg-blue-900/30 border border-blue-700 rounded-lg text-sm text-blue-200'>
-          浏览器阻止了自动播放，请点击下方按钮启用音频。
-          <div className='mt-3 flex flex-wrap gap-2'>
-            <button
-              onClick={startAudioPlayback}
-              className='px-4 py-2 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors'
-            >
-              启用音频
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* 连接状态 */}
       {!isConnected && !isConnecting && (
@@ -635,8 +595,11 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
       {/* 已连接状态 */}
       {isConnected && (
         <>
+          {/* 音频渲染器 - 自动处理远程音频播放（类似 MeetRoom） */}
+          <RoomAudioRenderer room={room} />
+
           {/* 参与者列表 */}
-          <div className='mb-6'>
+            <div className='mb-6'>
             <h4 className='text-sm font-semibold text-gray-300 mb-3'>
               参与者 ({stats.participantCount})
             </h4>

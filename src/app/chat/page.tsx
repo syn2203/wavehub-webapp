@@ -8,7 +8,7 @@ import { LogIn, ArrowLeft } from 'lucide-react'
 
 export default function ChatPage() {
   // 房间号输入状态
-  const [roomCode, setRoomCode] = useState('')
+  const [roomCode, setRoomCode] = useState('123456')
   const [roomCodeError, setRoomCodeError] = useState('')
   const [hasJoinedRoom, setHasJoinedRoom] = useState(false)
 
@@ -74,9 +74,7 @@ export default function ChatPage() {
               <button
                 onClick={() => setRoomMode('voice')}
                 className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
-                  roomMode === 'voice'
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-400 hover:text-white'
+                  roomMode === 'voice' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'
                 }`}
               >
                 仅语音
@@ -84,9 +82,7 @@ export default function ChatPage() {
               <button
                 onClick={() => setRoomMode('video')}
                 className={`px-2 sm:px-4 py-1.5 sm:py-2 rounded-md text-xs sm:text-sm font-medium transition-colors ${
-                  roomMode === 'video'
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-400 hover:text-white'
+                  roomMode === 'video' ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white'
                 }`}
               >
                 视频会议
@@ -105,12 +101,8 @@ export default function ChatPage() {
                   <div className='inline-flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 bg-blue-600/20 rounded-full mb-4'>
                     <LogIn className='w-8 h-8 sm:w-10 sm:h-10 text-blue-400' />
                   </div>
-                  <h1 className='text-2xl sm:text-3xl font-bold text-white mb-2'>
-                    加入房间
-                  </h1>
-                  <p className='text-gray-400 text-sm sm:text-base'>
-                    请输入6位数字房间号
-                  </p>
+                  <h1 className='text-2xl sm:text-3xl font-bold text-white mb-2'>加入房间</h1>
+                  <p className='text-gray-400 text-sm sm:text-base'>请输入6位数字房间号</p>
                 </div>
 
                 <div className='space-y-4'>
@@ -133,9 +125,7 @@ export default function ChatPage() {
                       className='w-full px-4 py-3 sm:py-4 bg-gray-700 border border-gray-600 text-white text-center text-2xl sm:text-3xl font-mono tracking-widest rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors placeholder-gray-500'
                       autoFocus
                     />
-                    {roomCodeError && (
-                      <p className='mt-2 text-sm text-red-400'>{roomCodeError}</p>
-                    )}
+                    {roomCodeError && <p className='mt-2 text-sm text-red-400'>{roomCodeError}</p>}
                   </div>
 
                   <button
