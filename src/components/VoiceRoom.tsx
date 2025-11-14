@@ -147,18 +147,36 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
   const toggleMicrophone = useCallback(async () => {
     if (!room || !room.localParticipant) return
 
+    // 检查 MediaDevices API 是否可用
+    if (typeof window === 'undefined' || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setError('您的浏览器不支持麦克风功能，请使用现代浏览器（Chrome、Firefox、Safari 等）')
+      return
+    }
+
     try {
       const enabled = !isMicEnabled
       await room.localParticipant.setMicrophoneEnabled(enabled)
       setIsMicEnabled(enabled)
+      
+      // 成功时清除错误
+      setError(null)
     } catch (err: any) {
       console.error('Failed to toggle microphone:', err)
-      if (err.name === 'NotAllowedError') {
+      
+      // 处理各种错误类型
+      const errorMessage = err.message || ''
+      const errorName = err.name || ''
+      
+      if (errorName === 'NotAllowedError' || errorName === 'PermissionDeniedError') {
         setError(ERROR_MESSAGES['permission-denied'])
-      } else if (err.name === 'NotFoundError') {
+      } else if (errorName === 'NotFoundError' || errorName === 'DevicesNotFoundError') {
         setError(ERROR_MESSAGES['device-not-found'])
+      } else if (errorMessage.includes('getUserMedia') || errorMessage.includes('MediaDevices')) {
+        setError('无法访问麦克风，请检查浏览器权限设置和网络连接')
+      } else if (errorMessage.includes('NotReadableError') || errorMessage.includes('TrackStartError')) {
+        setError('麦克风被其他应用占用，请关闭其他使用麦克风的程序')
       } else {
-        setError('无法切换麦克风状态')
+        setError(errorMessage || '无法切换麦克风状态，请稍后重试')
       }
     }
   }, [room, isMicEnabled])
@@ -210,14 +228,37 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
    */
   const loadAudioDevices = useCallback(async () => {
     try {
-      const devices = await Room.getLocalDevices('audioinput')
-      setAudioDevices(devices)
+      // 检查浏览器是否支持 MediaDevices API
+      if (typeof window === 'undefined' || !navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+        console.warn('MediaDevices API is not supported in this browser')
+        return
+      }
 
-      if (devices.length > 0 && !selectedMicId) {
-        setSelectedMicId(devices[0].deviceId)
+      // 先请求麦克风权限（某些浏览器需要先请求权限才能枚举设备）
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true })
+      } catch (permissionErr: any) {
+        // 权限被拒绝或设备不可用，但不阻止继续尝试枚举设备
+        console.warn('Microphone permission not granted, but continuing to enumerate devices:', permissionErr)
+      }
+
+      // 获取音频输入设备
+      const devices = await Room.getLocalDevices('audioinput')
+      
+      if (devices && devices.length > 0) {
+        setAudioDevices(devices)
+
+        if (!selectedMicId) {
+          setSelectedMicId(devices[0].deviceId)
+        }
+      } else {
+        console.warn('No audio input devices found')
+        setAudioDevices([])
       }
     } catch (err: any) {
       console.error('Failed to load audio devices:', err)
+      // 不显示错误给用户，因为这不是关键功能
+      setAudioDevices([])
     }
   }, [selectedMicId])
 
@@ -376,7 +417,6 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
    */
   useEffect(() => {
     connectToRoom()
-    loadAudioDevices()
 
     return () => {
       // 组件卸载时断开连接
@@ -386,6 +426,20 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  /**
+   * 连接成功后加载音频设备
+   */
+  useEffect(() => {
+    if (isConnected) {
+      // 延迟加载设备，确保连接完全建立
+      const timer = setTimeout(() => {
+        loadAudioDevices()
+      }, 500)
+
+      return () => clearTimeout(timer)
+    }
+  }, [isConnected, loadAudioDevices])
 
   /**
    * 定期更新参与者信息
