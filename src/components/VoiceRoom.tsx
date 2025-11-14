@@ -553,15 +553,15 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
   }
 
   return (
-    <div className='bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-700 p-6'>
-      {/* 头部 */}
-      <div className='flex items-center justify-between mb-6'>
-        <div>
-          <h3 className='text-xl font-bold text-white flex items-center'>
-            <Users className='w-6 h-6 text-blue-400 mr-2' />
-            语音房间
+    <div className='bg-gray-800/90 backdrop-blur-sm rounded-xl sm:rounded-2xl shadow-xl border border-gray-700 p-4 sm:p-6'>
+      {/* 头部 - 移动端优化 */}
+      <div className='flex items-center justify-between mb-4 sm:mb-6 flex-wrap gap-2'>
+        <div className='min-w-0 flex-1'>
+          <h3 className='text-lg sm:text-xl font-bold text-white flex items-center'>
+            <Users className='w-5 h-5 sm:w-6 sm:h-6 text-blue-400 mr-2 flex-shrink-0' />
+            <span className='truncate'>语音房间</span>
           </h3>
-          <p className='text-sm text-gray-400 mt-1'>
+          <p className='text-xs sm:text-sm text-gray-400 mt-1 truncate'>
             {roomName} • {stats.participantCount} 人在线
           </p>
         </div>
@@ -667,41 +667,52 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
             </div>
           )}
 
-          {/* 控制按钮 */}
-          <div className='flex items-center justify-center space-x-4'>
+          {/* 控制按钮 - 移动端优化 */}
+          <div className='flex items-center justify-center space-x-3 sm:space-x-4'>
             {/* 麦克风按钮 */}
             <button
               onClick={toggleMicrophone}
-              className={`p-4 rounded-full transition-all ${
+              className={`p-3 sm:p-4 rounded-full transition-all touch-manipulation ${
                 isMicEnabled
-                  ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-500/50'
-                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  ? 'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800 shadow-lg shadow-blue-500/50'
+                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600 active:bg-gray-500'
               }`}
               title={isMicEnabled ? '关闭麦克风' : '打开麦克风'}
+              aria-label={isMicEnabled ? '关闭麦克风' : '打开麦克风'}
             >
-              {isMicEnabled ? <Mic className='w-6 h-6' /> : <MicOff className='w-6 h-6' />}
+              {isMicEnabled ? (
+                <Mic className='w-5 h-5 sm:w-6 sm:h-6' />
+              ) : (
+                <MicOff className='w-5 h-5 sm:w-6 sm:h-6' />
+              )}
             </button>
 
             {/* 扬声器按钮 */}
             <button
               onClick={toggleSpeaker}
-              className={`p-4 rounded-full transition-all ${
+              className={`p-3 sm:p-4 rounded-full transition-all touch-manipulation ${
                 isSpeakerEnabled
-                  ? 'bg-green-600 text-white hover:bg-green-700 shadow-lg shadow-green-500/50'
-                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                  ? 'bg-green-600 text-white hover:bg-green-700 active:bg-green-800 shadow-lg shadow-green-500/50'
+                  : 'bg-gray-700 text-gray-300 hover:bg-gray-600 active:bg-gray-500'
               }`}
               title={isSpeakerEnabled ? '静音扬声器' : '打开扬声器'}
+              aria-label={isSpeakerEnabled ? '静音扬声器' : '打开扬声器'}
             >
-              {isSpeakerEnabled ? <Volume2 className='w-6 h-6' /> : <VolumeX className='w-6 h-6' />}
+              {isSpeakerEnabled ? (
+                <Volume2 className='w-5 h-5 sm:w-6 sm:h-6' />
+              ) : (
+                <VolumeX className='w-5 h-5 sm:w-6 sm:h-6' />
+              )}
             </button>
 
             {/* 挂断按钮 */}
             <button
               onClick={disconnectFromRoom}
-              className='p-4 rounded-full bg-red-600 text-white hover:bg-red-700 transition-all shadow-lg shadow-red-500/50'
+              className='p-3 sm:p-4 rounded-full bg-red-600 text-white hover:bg-red-700 active:bg-red-800 transition-all shadow-lg shadow-red-500/50 touch-manipulation'
               title='离开房间'
+              aria-label='离开房间'
             >
-              <PhoneOff className='w-6 h-6' />
+              <PhoneOff className='w-5 h-5 sm:w-6 sm:h-6' />
             </button>
           </div>
 

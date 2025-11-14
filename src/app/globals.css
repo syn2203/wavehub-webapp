@@ -242,4 +242,31 @@
     transform: translateY(-2px) scale(1.01);
     box-shadow: 0 25px 55px rgba(8, 145, 178, 0.45);
   }
+
+  /* 移动端触摸优化 */
+  .touch-manipulation {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* 移动端输入框优化 */
+  input[type='text'],
+  input[type='number'],
+  input[type='tel'] {
+    -webkit-appearance: none;
+    -moz-appearance: textfield;
+  }
+
+  input[type='number']::-webkit-inner-spin-button,
+  input[type='number']::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* 移动端滚动优化 */
+  @media (max-width: 640px) {
+    * {
+      -webkit-overflow-scrolling: touch;
+    }
+  }
 }
