@@ -1,7 +1,6 @@
-import { defineConfig, globalIgnores } from 'eslint/config';
-import nextVitals from 'eslint-config-next/core-web-vitals';
-import nextTs from 'eslint-config-next/typescript';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
+import { defineConfig, globalIgnores } from 'eslint/config'
+import nextVitals from 'eslint-config-next/core-web-vitals'
+import nextTs from 'eslint-config-next/typescript'
 
 const eslintConfig = defineConfig([
   ...nextVitals,
@@ -12,7 +11,7 @@ const eslintConfig = defineConfig([
     '.next/**',
     'out/**',
     'build/**',
-    'next-env.d.ts',
+    'next-env.d.ts'
   ]),
   // Custom rules to allow 'any' type
   {
@@ -22,11 +21,9 @@ const eslintConfig = defineConfig([
       '@typescript-eslint/no-unsafe-member-access': 'off',
       '@typescript-eslint/no-unsafe-call': 'off',
       '@typescript-eslint/no-unsafe-return': 'off',
-      '@typescript-eslint/no-unsafe-argument': 'off',
-    },
-  },
-  // Surface Prettier formatting issues during lint runs
-  eslintPluginPrettierRecommended,
-]);
+      '@typescript-eslint/no-unsafe-argument': 'off'
+    }
+  }
+])
 
-export default eslintConfig;
+export default eslintConfig

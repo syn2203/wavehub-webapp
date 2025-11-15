@@ -174,7 +174,7 @@ export function useWhisperTranscription({
 
         const track = audioTrack.track as any
         const mediaStream = track.mediaStream
-            if (!mediaStream) return
+        if (!mediaStream) return
 
         // 创建音频上下文
         audioContext = new (window.AudioContext || (window as any).webkitAudioContext)({

@@ -9,17 +9,17 @@ export const LIVEKIT_CONFIG = {
 
   // API Key 和 Secret（仅在服务端使用）
   apiKey: process.env.LIVEKIT_API_KEY || 'devkey',
-  apiSecret: process.env.LIVEKIT_API_SECRET || 'secret',
-};
+  apiSecret: process.env.LIVEKIT_API_SECRET || 'secret'
+}
 
 /**
  * 生成房间名称
  */
 export function generateRoomName(section?: string, category?: string): string {
   if (section && category) {
-    return `${section}-${category}`.toLowerCase().replace(/\s+/g, '-');
+    return `${section}-${category}`.toLowerCase().replace(/\s+/g, '-')
   }
-  return `wavehub-room-${Date.now()}`;
+  return `wavehub-room-${Date.now()}`
 }
 
 /**
@@ -27,7 +27,7 @@ export function generateRoomName(section?: string, category?: string): string {
  */
 export function isValidRoomName(roomName: string): boolean {
   // 房间名称只能包含字母、数字、连字符和下划线
-  return /^[a-zA-Z0-9_-]+$/.test(roomName);
+  return /^[a-zA-Z0-9_-]+$/.test(roomName)
 }
 
 /**
@@ -37,19 +37,19 @@ export const AUDIO_PRESETS = {
   // 高质量音频（音乐、播客）
   high: {
     audioBitrate: 128000,
-    dtx: false, // 不使用 DTX（连续传输模式）
+    dtx: false // 不使用 DTX（连续传输模式）
   },
   // 标准质量（语音通话）
   standard: {
     audioBitrate: 64000,
-    dtx: true, // 使用 DTX 节省带宽
+    dtx: true // 使用 DTX 节省带宽
   },
   // 低质量（网络较差时）
   low: {
     audioBitrate: 32000,
-    dtx: true,
-  },
-};
+    dtx: true
+  }
+}
 
 /**
  * 错误消息映射
@@ -61,5 +61,5 @@ export const ERROR_MESSAGES: Record<string, string> = {
   'audio-blocked': '浏览器阻止了音频播放，请点击“启用音频”按钮手动开启',
   'room-full': '房间已满，无法加入',
   'invalid-token': '无效的访问令牌，请刷新页面重试',
-  unknown: '发生未知错误，请稍后重试',
-};
+  unknown: '发生未知错误，请稍后重试'
+}

@@ -1,9 +1,9 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
-import { LiveKitRoom, VideoConference, RoomAudioRenderer } from '@livekit/components-react'
+import {useCallback, useEffect, useState} from 'react'
+import {LiveKitRoom, RoomAudioRenderer, VideoConference} from '@livekit/components-react'
 import '@livekit/components-styles'
-import { Mic, MicOff, Video, VideoOff, PhoneOff, Settings, Users } from 'lucide-react'
+import {Mic, MicOff, PhoneOff, Settings, Users, Video, VideoOff} from 'lucide-react'
 
 interface MeetRoomProps {
   roomName: string
@@ -31,11 +31,11 @@ function isMediaDevicesAvailable(): boolean {
 }
 
 export default function MeetRoom({
-  roomName,
-  participantName,
-  onDisconnect,
-  enableVideo = true
-}: MeetRoomProps) {
+                                   roomName,
+                                   participantName,
+                                   onDisconnect,
+                                   enableVideo = true
+                                 }: MeetRoomProps) {
   const [token, setToken] = useState<string | null>(null)
   const [serverUrl, setServerUrl] = useState<string>('')
   const [isConnecting, setIsConnecting] = useState(false)
@@ -99,7 +99,7 @@ export default function MeetRoom({
 
         setServerUrl(data.url)
         setToken(data.token)
-        console.log('LiveKit 配置已获取:', { url: data.url, roomName: data.roomName })
+        console.log('LiveKit 配置已获取:', {url: data.url, roomName: data.roomName})
       } catch (err: any) {
         console.error('Failed to fetch token:', err)
         setError(err.message || '获取访问令牌失败，请检查网络连接和服务端配置')
@@ -123,7 +123,7 @@ export default function MeetRoom({
     return (
       <div className='bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-700 p-6'>
         <div className='flex items-center space-x-3 text-red-400 mb-4'>
-          <Settings className='w-6 h-6' />
+          <Settings className='w-6 h-6'/>
           <h3 className='text-xl font-bold'>{isSecurityError ? '安全上下文错误' : '连接错误'}</h3>
         </div>
         <div className='text-gray-300 mb-4 space-y-2'>
@@ -184,7 +184,8 @@ export default function MeetRoom({
   }
 
   return (
-    <div className='h-full w-full bg-gray-900 rounded-xl sm:rounded-2xl overflow-hidden shadow-xl border border-gray-700'>
+    <div
+      className='h-full w-full bg-gray-900 rounded-xl sm:rounded-2xl overflow-hidden shadow-xl border border-gray-700'>
       <LiveKitRoom
         video={isVideoEnabled}
         audio={isAudioEnabled}
@@ -200,9 +201,10 @@ export default function MeetRoom({
       >
         <div className='flex flex-col h-full w-full'>
           {/* 顶部工具栏 - 移动端优化 */}
-          <div className='flex items-center justify-between p-2 sm:p-4 bg-gray-800/50 border-b border-gray-700 z-10'>
+          <div
+            className='flex items-center justify-between p-2 sm:p-4 bg-gray-800/50 border-b border-gray-700 z-10'>
             <div className='flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1'>
-              <Users className='w-4 h-4 sm:w-5 sm:h-5 text-blue-400 flex-shrink-0' />
+              <Users className='w-4 h-4 sm:w-5 sm:h-5 text-blue-400 flex-shrink-0'/>
               <h3 className='text-sm sm:text-lg font-bold text-white truncate'>{roomName}</h3>
             </div>
             <RoomControls
@@ -216,11 +218,11 @@ export default function MeetRoom({
 
           {/* 视频会议区域 */}
           <div className='flex-1 overflow-hidden relative min-h-0'>
-            <VideoConference />
+            <VideoConference/>
           </div>
 
           {/* 音频渲染器 */}
-          <RoomAudioRenderer />
+          <RoomAudioRenderer/>
         </div>
       </LiveKitRoom>
     </div>
@@ -229,12 +231,12 @@ export default function MeetRoom({
 
 // 房间控制组件 - 移动端优化
 function RoomControls({
-  onVideoToggle,
-  onAudioToggle,
-  isVideoEnabled,
-  isAudioEnabled,
-  onDisconnect
-}: {
+                        onVideoToggle,
+                        onAudioToggle,
+                        isVideoEnabled,
+                        isAudioEnabled,
+                        onDisconnect
+                      }: {
   onVideoToggle: () => void
   onAudioToggle: () => void
   isVideoEnabled: boolean
@@ -255,9 +257,9 @@ function RoomControls({
         aria-label={isVideoEnabled ? '关闭摄像头' : '打开摄像头'}
       >
         {isVideoEnabled ? (
-          <Video className='w-4 h-4 sm:w-5 sm:h-5' />
+          <Video className='w-4 h-4 sm:w-5 sm:h-5'/>
         ) : (
-          <VideoOff className='w-4 h-4 sm:w-5 sm:h-5' />
+          <VideoOff className='w-4 h-4 sm:w-5 sm:h-5'/>
         )}
       </button>
 
@@ -273,9 +275,9 @@ function RoomControls({
         aria-label={isAudioEnabled ? '关闭麦克风' : '打开麦克风'}
       >
         {isAudioEnabled ? (
-          <Mic className='w-4 h-4 sm:w-5 sm:h-5' />
+          <Mic className='w-4 h-4 sm:w-5 sm:h-5'/>
         ) : (
-          <MicOff className='w-4 h-4 sm:w-5 sm:h-5' />
+          <MicOff className='w-4 h-4 sm:w-5 sm:h-5'/>
         )}
       </button>
 
@@ -286,7 +288,7 @@ function RoomControls({
         title='离开房间'
         aria-label='离开房间'
       >
-        <PhoneOff className='w-4 h-4 sm:w-5 sm:h-5' />
+        <PhoneOff className='w-4 h-4 sm:w-5 sm:h-5'/>
       </button>
     </div>
   )
