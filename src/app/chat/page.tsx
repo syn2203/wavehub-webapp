@@ -13,7 +13,7 @@ export default function ChatPage() {
   const [hasJoinedRoom, setHasJoinedRoom] = useState(false)
 
   // 房间模式
-  const [roomMode, setRoomMode] = useState<'voice' | 'video'>('video')
+  const [roomMode, setRoomMode] = useState<'voice' | 'video'>('voice')
 
   // 当前用户名
   const [currentUserName] = useState(() => {

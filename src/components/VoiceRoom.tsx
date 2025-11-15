@@ -25,6 +25,8 @@ import {
   AlertCircle
 } from 'lucide-react'
 import { ERROR_MESSAGES } from '@/lib/livekit'
+import { useWhisperTranscription } from '@/hooks/useWhisperTranscription'
+import TranscriptionPanel from './TranscriptionPanel'
 
 interface VoiceRoomProps {
   roomName: string
@@ -67,6 +69,18 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
     activeSpeakers: 0
   })
 
+  // 语音转文本
+  const {
+    transcriptions,
+    isLoading: isTranscribing,
+    error: transcriptionError,
+    isModelReady,
+    clearTranscriptions
+  } = useWhisperTranscription({
+    room,
+    enabled: isConnected && isMicEnabled,
+    isMicEnabled
+  })
 
   /**
    * 连接到 LiveKit 房间
@@ -131,7 +145,7 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
     } finally {
       setIsConnecting(false)
     }
-      }, [room, roomName, participantName, isConnecting, isConnected])
+  }, [room, roomName, participantName, isConnecting, isConnected])
 
   /**
    * 断开连接
@@ -161,7 +175,11 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
     if (!room || !room.localParticipant) return
 
     // 检查 MediaDevices API 是否可用
-    if (typeof window === 'undefined' || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    if (
+      typeof window === 'undefined' ||
+      !navigator.mediaDevices ||
+      !navigator.mediaDevices.getUserMedia
+    ) {
       setError('您的浏览器不支持麦克风功能，请使用现代浏览器（Chrome、Firefox、Safari 等）')
       return
     }
@@ -170,23 +188,26 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
       const enabled = !isMicEnabled
       await room.localParticipant.setMicrophoneEnabled(enabled)
       setIsMicEnabled(enabled)
-      
+
       // 成功时清除错误
       setError(null)
     } catch (err: any) {
       console.error('Failed to toggle microphone:', err)
-      
+
       // 处理各种错误类型
       const errorMessage = err.message || ''
       const errorName = err.name || ''
-      
+
       if (errorName === 'NotAllowedError' || errorName === 'PermissionDeniedError') {
         setError(ERROR_MESSAGES['permission-denied'])
       } else if (errorName === 'NotFoundError' || errorName === 'DevicesNotFoundError') {
         setError(ERROR_MESSAGES['device-not-found'])
       } else if (errorMessage.includes('getUserMedia') || errorMessage.includes('MediaDevices')) {
         setError('无法访问麦克风，请检查浏览器权限设置和网络连接')
-      } else if (errorMessage.includes('NotReadableError') || errorMessage.includes('TrackStartError')) {
+      } else if (
+        errorMessage.includes('NotReadableError') ||
+        errorMessage.includes('TrackStartError')
+      ) {
         setError('麦克风被其他应用占用，请关闭其他使用麦克风的程序')
       } else {
         setError(errorMessage || '无法切换麦克风状态，请稍后重试')
@@ -244,7 +265,11 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
   const loadAudioDevices = useCallback(async () => {
     try {
       // 检查浏览器是否支持 MediaDevices API
-      if (typeof window === 'undefined' || !navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+      if (
+        typeof window === 'undefined' ||
+        !navigator.mediaDevices ||
+        !navigator.mediaDevices.enumerateDevices
+      ) {
         console.warn('MediaDevices API is not supported in this browser')
         return
       }
@@ -254,12 +279,15 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
         await navigator.mediaDevices.getUserMedia({ audio: true })
       } catch (permissionErr: any) {
         // 权限被拒绝或设备不可用，但不阻止继续尝试枚举设备
-        console.warn('Microphone permission not granted, but continuing to enumerate devices:', permissionErr)
+        console.warn(
+          'Microphone permission not granted, but continuing to enumerate devices:',
+          permissionErr
+        )
       }
 
       // 获取音频输入设备
       const devices = await Room.getLocalDevices('audioinput')
-      
+
       if (devices && devices.length > 0) {
         setAudioDevices(devices)
 
@@ -474,7 +502,6 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
     return () => clearInterval(interval)
   }, [isConnected, updateParticipants])
 
-
   /**
    * 渲染参与者卡片
    */
@@ -574,7 +601,6 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
         </div>
       )}
 
-
       {/* 连接状态 */}
       {!isConnected && !isConnecting && (
         <div className='text-center py-8'>
@@ -598,8 +624,24 @@ export default function VoiceRoom({ roomName, participantName, onDisconnect }: V
           {/* 音频渲染器 - 自动处理远程音频播放（类似 MeetRoom） */}
           <RoomAudioRenderer room={room} />
 
+          {/* 实时转录面板 */}
+          {isConnected && (
+            <div className='mb-4'>
+              <TranscriptionPanel
+                transcriptions={transcriptions}
+                isLoading={isTranscribing && !isModelReady}
+                onClear={clearTranscriptions}
+              />
+              {transcriptionError && (
+                <div className='mt-2 p-2 bg-yellow-900/30 border border-yellow-700 rounded text-xs text-yellow-200'>
+                  {transcriptionError}
+                </div>
+              )}
+            </div>
+          )}
+
           {/* 参与者列表 */}
-            <div className='mb-6'>
+          <div className='mb-6'>
             <h4 className='text-sm font-semibold text-gray-300 mb-3'>
               参与者 ({stats.participantCount})
             </h4>
