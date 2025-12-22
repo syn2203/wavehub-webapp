@@ -64,19 +64,19 @@ export default function HomePage() {
 
             {/* 核心数据展示 */}
             <div className='grid grid-cols-2 md:grid-cols-4 gap-6'>
-              <div className='text-center p-6 bg-white/60 backdrop-blur-sm rounded-2xl'>
+              <div className='text-center p-6 bg-gray-50 rounded-2xl border border-gray-200'>
                 <div className='text-3xl font-bold text-blue-600 mb-2'>100K+</div>
                 <div className='text-gray-600'>全球用户</div>
               </div>
-              <div className='text-center p-6 bg-white/60 backdrop-blur-sm rounded-2xl'>
+              <div className='text-center p-6 bg-gray-50 rounded-2xl border border-gray-200'>
                 <div className='text-3xl font-bold text-green-600 mb-2'>50M+</div>
                 <div className='text-gray-600'>语音通话分钟</div>
               </div>
-              <div className='text-center p-6 bg-white/60 backdrop-blur-sm rounded-2xl'>
+              <div className='text-center p-6 bg-gray-50 rounded-2xl border border-gray-200'>
                 <div className='text-3xl font-bold text-purple-600 mb-2'>99.9%</div>
                 <div className='text-gray-600'>服务可用性</div>
               </div>
-              <div className='text-center p-6 bg-white/60 backdrop-blur-sm rounded-2xl'>
+              <div className='text-center p-6 bg-gray-50 rounded-2xl border border-gray-200'>
                 <div className='text-3xl font-bold text-orange-600 mb-2'>AI</div>
                 <div className='text-gray-600'>智能降噪</div>
               </div>
