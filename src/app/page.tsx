@@ -5,12 +5,10 @@ import { Users, Mic } from 'lucide-react'
 
 export default function HomePage() {
   return (
-    <div className='relative min-h-screen overflow-hidden text-slate-100 flex flex-col'>
-      <div className='pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.2),_transparent_55%)] opacity-70' />
-      <div className='pointer-events-none absolute inset-y-0 right-[-10%] w-1/2 bg-gradient-to-bl from-cyan-500/20 via-transparent to-fuchsia-500/20 blur-3xl' />
+    <div className='relative min-h-screen overflow-hidden bg-white flex flex-col'>
       <div className='relative z-10 flex flex-col min-h-screen'>
         {/* 头部 */}
-        <header className='bg-white/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-40'>
+        <header className='bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm'>
           <div className='container mx-auto px-6 py-4'>
             <div className='flex items-center justify-between'>
               <div className='flex items-center space-x-3'>
@@ -25,8 +23,14 @@ export default function HomePage() {
                 </div>
               </div>
               <nav className='flex items-center space-x-6'>
-                <Link href='/chat' className='text-gray-600 hover:text-blue-600 transition-colors'>
+                <Link href='/chat' className='text-gray-700 hover:text-blue-600 transition-colors'>
                   语音房间
+                </Link>
+                <Link
+                  href='/components-demo'
+                  className='text-gray-700 hover:text-blue-600 transition-colors'
+                >
+                  组件示例
                 </Link>
                 <button className='btn-primary px-6 py-2'>登录</button>
               </nav>
@@ -81,7 +85,7 @@ export default function HomePage() {
         </main>
 
         {/* 页脚 */}
-        <footer className='bg-white/80 backdrop-blur-xl border-t border-white/10 mt-auto'>
+        <footer className='bg-white border-t border-gray-200 mt-auto'>
           <div className='container mx-auto p-6'>
             <div className='text-center text-sm text-gray-600'>
               <p>&copy; 2024 WaveHub. 保留所有权利。</p>
