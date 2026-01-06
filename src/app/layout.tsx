@@ -1,10 +1,15 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Outfit, Plus_Jakarta_Sans } from 'next/font/google'
 import './globals.css'
 
-const inter = Inter({
+const plusJakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
-  variable: '--font-inter'
+  variable: '--font-plus-jakarta'
+})
+
+const outfit = Outfit({
+  subsets: ['latin'],
+  variable: '--font-outfit'
 })
 
 export const metadata: Metadata = {
@@ -34,7 +39,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='zh-CN' className='scroll-smooth' suppressHydrationWarning>
-      <body className={`${inter.variable} font-inter antialiased`}>{children}</body>
+      <body className={`${plusJakarta.variable} ${outfit.variable} font-body antialiased`}>
+        {children}
+      </body>
     </html>
   )
 }
