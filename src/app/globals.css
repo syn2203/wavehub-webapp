@@ -49,6 +49,11 @@
     border-color: var(--border-soft);
   }
 
+  html {
+    /* 保留滚动条空间，防止页面宽度变化 */
+    scrollbar-gutter: stable;
+  }
+
   body {
     font-family: var(--font-plus-jakarta);
     background: var(--page-bg);
@@ -58,6 +63,8 @@
     letter-spacing: -0.01em;
     -webkit-font-smoothing: antialiased;
     position: relative;
+    /* 确保滚动条始终占用空间，防止布局偏移 */
+    overflow-y: scroll;
   }
 
   ::selection {
