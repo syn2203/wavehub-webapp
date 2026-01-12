@@ -9,7 +9,7 @@ export default function FreelancerCard({ freelancer, onClick }: FreelancerCardPr
   return (
     <div
       onClick={onClick}
-      className='break-inside-avoid mb-4 bg-white rounded-xl border border-gray-200 hover:shadow-xl transition-all cursor-pointer overflow-hidden'
+      className='bg-white rounded-xl border border-gray-200 hover:shadow-xl transition-all cursor-pointer overflow-hidden'
     >
       {/* 头部信息 */}
       <div className='p-5'>

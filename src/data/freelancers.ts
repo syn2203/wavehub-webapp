@@ -17,7 +17,8 @@ export const ALL_FREELANCERS: Freelancer[] = [
     verified: true,
     online: true,
     responseTime: '< 1 hour',
-    languages: ['English', 'Mandarin']
+    languages: ['English', 'Mandarin'],
+    category: 'Design'
   },
   {
     id: 2,
@@ -34,7 +35,8 @@ export const ALL_FREELANCERS: Freelancer[] = [
     verified: true,
     online: false,
     responseTime: '< 2 hours',
-    languages: ['English', 'Spanish', 'Catalan']
+    languages: ['English', 'Spanish', 'Catalan'],
+    category: 'Development'
   },
   {
     id: 3,
@@ -51,7 +53,8 @@ export const ALL_FREELANCERS: Freelancer[] = [
     verified: true,
     online: true,
     responseTime: '< 1 hour',
-    languages: ['English', 'French']
+    languages: ['English', 'French'],
+    category: 'Content'
   },
   {
     id: 4,
@@ -68,7 +71,8 @@ export const ALL_FREELANCERS: Freelancer[] = [
     verified: true,
     online: true,
     responseTime: '< 1 hour',
-    languages: ['English', 'Korean']
+    languages: ['English', 'Korean'],
+    category: 'Other'
   },
   {
     id: 5,
@@ -85,7 +89,8 @@ export const ALL_FREELANCERS: Freelancer[] = [
     verified: true,
     online: false,
     responseTime: '< 3 hours',
-    languages: ['English', 'Mandarin']
+    languages: ['English', 'Mandarin'],
+    category: 'Design'
   },
   {
     id: 6,
@@ -102,7 +107,8 @@ export const ALL_FREELANCERS: Freelancer[] = [
     verified: true,
     online: true,
     responseTime: '< 2 hours',
-    languages: ['English', 'Korean']
+    languages: ['English', 'Korean'],
+    category: 'Development'
   },
   {
     id: 7,
@@ -119,7 +125,8 @@ export const ALL_FREELANCERS: Freelancer[] = [
     verified: true,
     online: true,
     responseTime: '< 1 hour',
-    languages: ['English', 'French', 'Spanish']
+    languages: ['English', 'French', 'Spanish'],
+    category: 'Marketing'
   },
   {
     id: 8,
@@ -136,7 +143,8 @@ export const ALL_FREELANCERS: Freelancer[] = [
     verified: true,
     online: false,
     responseTime: '< 2 hours',
-    languages: ['English']
+    languages: ['English'],
+    category: 'Development'
   },
   {
     id: 9,
@@ -153,7 +161,8 @@ export const ALL_FREELANCERS: Freelancer[] = [
     verified: true,
     online: true,
     responseTime: '< 1 hour',
-    languages: ['English', 'Spanish']
+    languages: ['English', 'Spanish'],
+    category: 'Development'
   },
   {
     id: 10,
@@ -170,7 +179,8 @@ export const ALL_FREELANCERS: Freelancer[] = [
     verified: true,
     online: true,
     responseTime: '< 1 hour',
-    languages: ['English']
+    languages: ['English'],
+    category: 'Development'
   },
   {
     id: 11,
@@ -187,7 +197,8 @@ export const ALL_FREELANCERS: Freelancer[] = [
     verified: true,
     online: false,
     responseTime: '< 4 hours',
-    languages: ['English', 'Japanese']
+    languages: ['English', 'Japanese'],
+    category: 'Design'
   },
   {
     id: 12,
@@ -204,6 +215,79 @@ export const ALL_FREELANCERS: Freelancer[] = [
     verified: true,
     online: true,
     responseTime: '< 2 hours',
-    languages: ['English', 'Hindi']
+    languages: ['English', 'Hindi'],
+    category: 'Other'
+  },
+  {
+    id: 13,
+    name: 'Tom Anderson',
+    title: 'Music Producer & Composer',
+    avatar: 'TA',
+    location: 'Los Angeles, USA',
+    hourlyRate: '$95',
+    rating: 4.9,
+    reviews: 156,
+    completedJobs: 112,
+    skills: ['Music Production', 'Sound Design', 'Audio Mixing', 'Composition'],
+    bio: 'Award-winning music producer creating original compositions and soundtracks for films, games, and brands.',
+    verified: true,
+    online: true,
+    responseTime: '< 2 hours',
+    languages: ['English'],
+    category: 'Music'
+  },
+  {
+    id: 14,
+    name: 'Luna Martinez',
+    title: 'Social Media Content Creator',
+    avatar: 'LM',
+    location: 'Miami, USA',
+    hourlyRate: '$45',
+    rating: 4.7,
+    reviews: 89,
+    completedJobs: 67,
+    skills: ['Content Creation', 'Video Editing', 'Social Media', 'Influencer Marketing'],
+    bio: 'Creative content creator specializing in short-form video content and social media strategy for brands.',
+    verified: true,
+    online: true,
+    responseTime: '< 1 hour',
+    languages: ['English', 'Spanish'],
+    category: 'Content'
+  },
+  {
+    id: 15,
+    name: 'Chen Wei',
+    title: 'Technical Writer',
+    avatar: 'CW',
+    location: 'Beijing, China',
+    hourlyRate: '$55',
+    rating: 4.8,
+    reviews: 102,
+    completedJobs: 78,
+    skills: ['Technical Writing', 'Documentation', 'API Docs', 'User Guides'],
+    bio: 'Technical writer creating clear and comprehensive documentation for software products and APIs.',
+    verified: true,
+    online: false,
+    responseTime: '< 3 hours',
+    languages: ['English', 'Mandarin'],
+    category: 'Content'
+  },
+  {
+    id: 16,
+    name: 'Oliver Brown',
+    title: 'Audio Engineer',
+    avatar: 'OB',
+    location: 'London, UK',
+    hourlyRate: '$70',
+    rating: 4.9,
+    reviews: 134,
+    completedJobs: 95,
+    skills: ['Audio Engineering', 'Podcast Production', 'Voice Over', 'Sound Editing'],
+    bio: 'Professional audio engineer specializing in podcast production, voice-over editing, and sound design.',
+    verified: true,
+    online: true,
+    responseTime: '< 2 hours',
+    languages: ['English'],
+    category: 'Music'
   }
 ]

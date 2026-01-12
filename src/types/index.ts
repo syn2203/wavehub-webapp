@@ -29,6 +29,7 @@ export type Freelancer = {
   online: boolean
   responseTime: string
   languages: string[]
+  category: string // 行业类别
 }
 
 // Tab 类型
@@ -44,3 +45,13 @@ export type FilterCategory =
   | 'Smart Contracts'
   | 'UI/UX'
   | 'Web3'
+
+// 自由职业者类别类型
+export type FreelancerCategory =
+  | 'All'
+  | 'Design'
+  | 'Development'
+  | 'Marketing'
+  | 'Content'
+  | 'Music'
+  | 'Other'

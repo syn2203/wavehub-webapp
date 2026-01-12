@@ -10,8 +10,11 @@ interface TasksViewProps {
   tasks: Task[]
 }
 
+const ITEMS_PER_PAGE = 8 // 每页显示的数量
+
 export default function TasksView({tasks}: TasksViewProps) {
   const [selectedFilter, setSelectedFilter] = useState<FilterCategory>('All Tasks')
+  const [displayCount, setDisplayCount] = useState(ITEMS_PER_PAGE)
 
   // 过滤任务
   const filteredTasks = useMemo(
@@ -19,8 +22,22 @@ export default function TasksView({tasks}: TasksViewProps) {
     [tasks, selectedFilter]
   )
 
+  // 当前显示的任务
+  const displayedTasks = useMemo(
+    () => filteredTasks.slice(0, displayCount),
+    [filteredTasks, displayCount]
+  )
+
+  // 是否还有更多任务
+  const hasMore = displayCount < filteredTasks.length
+
   const handleFilterClick = (category: FilterCategory) => {
     setSelectedFilter(category)
+    setDisplayCount(ITEMS_PER_PAGE) // 切换过滤时重置显示数量
+  }
+
+  const handleLoadMore = () => {
+    setDisplayCount((prev) => prev + ITEMS_PER_PAGE)
   }
 
   return (
@@ -65,7 +82,7 @@ export default function TasksView({tasks}: TasksViewProps) {
       {/* 任务网格 */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         {filteredTasks.length > 0 ? (
-          filteredTasks.map((task) => (
+          displayedTasks.map((task) => (
             <TaskCard key={task.id} task={task}/>
           ))
         ) : (
@@ -82,12 +99,20 @@ export default function TasksView({tasks}: TasksViewProps) {
       </div>
 
       {/* 加载更多 */}
-      <div className="mt-8 text-center">
-        <button
-          className="px-6 py-3 bg-white border border-gray-200 rounded-lg text-sm hover:bg-gray-50 transition-colors">
-          load more
-        </button>
-      </div>
+      {filteredTasks.length > 0 && (
+        <div className="mt-8 text-center">
+          {hasMore ? (
+            <button
+              onClick={handleLoadMore}
+              className="px-6 py-3 bg-white border border-gray-200 rounded-lg text-sm hover:bg-gray-50 transition-colors"
+            >
+              load more
+            </button>
+          ) : (
+            <p className="text-gray-400 text-sm">No more tasks to load</p>
+          )}
+        </div>
+      )}
     </div>
   )
 }
