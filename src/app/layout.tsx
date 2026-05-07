@@ -8,16 +8,16 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'WaveHub - AI驱动的实时语音协作平台',
+  title: 'TaskChain — AI × 区块链任务分包协作平台',
   description:
-    '由AI驱动的实时语音协作平台，连接全球，共创未来。提供高质量语音通信、智能降噪、实时转录等先进功能。',
-  keywords: 'AI, 语音协作, 实时通信, 智能降噪, 语音会议, 团队协作, 在线教育',
-  authors: [{ name: 'WaveHub' }],
+    '基于区块链 + AI 的任务分包协作平台。AI 智能拆分任务，全球服务者自由承接，链上验证交付，智能合约秒级结算。',
+  keywords: 'AI, 区块链, 任务协作, 智能合约, Web3, 去中心化, 自由职业, 任务分包',
+  authors: [{ name: 'TaskChain' }],
   openGraph: {
-    title: 'WaveHub - AI驱动的实时语音协作平台',
-    description: '由AI驱动的实时语音协作平台，连接全球，共创未来',
-    type: 'website'
-  }
+    title: 'TaskChain — AI × 区块链任务分包协作平台',
+    description: '基于区块链 + AI 的任务分包协作平台，重新定义全球协作方式',
+    type: 'website',
+  },
 }
 
 export const viewport = {
