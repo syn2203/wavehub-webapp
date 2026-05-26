@@ -26,6 +26,7 @@ import {
   FileCheck,
   UserCheck,
 } from 'lucide-react'
+import { LiquidGlass } from '@/components/ui/liquid-glass'
 
 // ─── Static Data ─────────────────────────────────────────────────────────────
 
@@ -1314,6 +1315,146 @@ export default function HomePage() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ── LIQUID GLASS SHOWCASE ───────────────────────────────────── */}
+      <section className='py-28 relative overflow-hidden'>
+        {/* Ambient gradient background so glass is clearly visible */}
+        <div
+          className='absolute inset-0 pointer-events-none'
+          style={{
+            background: [
+              'radial-gradient(ellipse 55% 55% at 18% 30%, rgba(124,58,237,0.38), transparent 65%)',
+              'radial-gradient(ellipse 45% 45% at 78% 62%, rgba(14,165,233,0.28), transparent 55%)',
+              'radial-gradient(ellipse 35% 35% at 50% 85%, rgba(236,72,153,0.22), transparent 50%)',
+            ].join(', '),
+          }}
+        />
+
+        <div className='max-w-7xl mx-auto px-6 relative'>
+          {/* Section header */}
+          <div className='text-center mb-16'>
+            <div
+              className='inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-5 text-xs font-medium tracking-wide uppercase'
+              style={{
+                background: 'rgba(124,58,237,0.12)',
+                border: '1px solid rgba(124,58,237,0.28)',
+                color: '#a78bfa',
+              }}
+            >
+              iOS 26 Design Language
+            </div>
+            <h2 className='text-4xl font-bold mb-4' style={{ color: '#f1f5f9' }}>
+              Liquid Glass
+            </h2>
+            <p className='text-lg max-w-xl mx-auto' style={{ color: 'rgba(148,163,184,0.65)' }}>
+              苹果 iOS 26 / macOS Tahoe 液态玻璃效果——折射、高光、景深三层叠加
+            </p>
+          </div>
+
+          {/* Pills row */}
+          <div className='flex items-center justify-center gap-3 flex-wrap mb-10'>
+            <LiquidGlass variant='pill' intensity='subtle'>
+              <span style={{ color: '#e2e8f0' }}>Subtle</span>
+            </LiquidGlass>
+            <LiquidGlass variant='pill'>
+              <span style={{ color: '#e2e8f0' }}>Normal</span>
+            </LiquidGlass>
+            <LiquidGlass variant='pill' intensity='strong'>
+              <span style={{ color: '#e2e8f0' }}>Strong</span>
+            </LiquidGlass>
+            <LiquidGlass variant='pill' tint='rgba(124,58,237,0.16)' glow='#7c3aed'>
+              <span style={{ color: '#c4b5fd' }}>Purple Tint</span>
+            </LiquidGlass>
+            <LiquidGlass variant='pill' tint='rgba(14,165,233,0.14)' glow='#0ea5e9'>
+              <span style={{ color: '#7dd3fc' }}>Blue Tint</span>
+            </LiquidGlass>
+            <LiquidGlass variant='pill' animate>
+              <span style={{ color: '#e2e8f0' }}>Animated</span>
+            </LiquidGlass>
+          </div>
+
+          {/* Buttons row */}
+          <div className='flex items-center justify-center gap-4 flex-wrap mb-12'>
+            <LiquidGlass as='button' variant='button' intensity='subtle'>
+              <span style={{ color: '#e2e8f0' }}>Subtle Button</span>
+            </LiquidGlass>
+            <LiquidGlass as='button' variant='button'>
+              <span style={{ color: '#e2e8f0' }}>Normal Button</span>
+            </LiquidGlass>
+            <LiquidGlass as='button' variant='button' intensity='strong' animate>
+              <span style={{ color: '#e2e8f0' }}>Strong + Animated</span>
+            </LiquidGlass>
+            <LiquidGlass
+              as='button'
+              variant='button'
+              tint='rgba(124,58,237,0.16)'
+              glow='#7c3aed'
+              animate
+            >
+              <span style={{ color: '#c4b5fd' }}>Glow Button</span>
+            </LiquidGlass>
+          </div>
+
+          {/* Cards grid */}
+          <div className='grid md:grid-cols-3 gap-6 mb-8'>
+            <LiquidGlass variant='card' intensity='subtle'>
+              <h3 className='text-lg font-semibold mb-2' style={{ color: '#f1f5f9' }}>
+                Subtle Glass
+              </h3>
+              <p className='text-sm leading-relaxed' style={{ color: 'rgba(148,163,184,0.7)' }}>
+                轻柔的磨砂玻璃效果，适合在背景复杂度较低时使用。
+              </p>
+            </LiquidGlass>
+
+            <LiquidGlass variant='card' animate glow='#7c3aed' tint='rgba(124,58,237,0.10)'>
+              <h3 className='text-lg font-semibold mb-2' style={{ color: '#f1f5f9' }}>
+                Animated + Glow
+              </h3>
+              <p className='text-sm leading-relaxed' style={{ color: 'rgba(148,163,184,0.7)' }}>
+                启用液态动画与紫色光晕，高光缓慢漂移，模拟玻璃内光线流动。
+              </p>
+            </LiquidGlass>
+
+            <LiquidGlass variant='card' intensity='strong' tint='rgba(14,165,233,0.12)' glow='#0ea5e9'>
+              <h3 className='text-lg font-semibold mb-2' style={{ color: '#f1f5f9' }}>
+                Strong + Blue
+              </h3>
+              <p className='text-sm leading-relaxed' style={{ color: 'rgba(148,163,184,0.7)' }}>
+                强度最高的模糊与折射，蓝色染色，适合强调性卡片场景。
+              </p>
+            </LiquidGlass>
+          </div>
+
+          {/* Large panel */}
+          <LiquidGlass
+            variant='panel'
+            intensity='strong'
+            animate
+            tint='rgba(124,58,237,0.09)'
+            glow='#7c3aed'
+            className='max-w-2xl mx-auto'
+          >
+            <div className='text-center'>
+              <div
+                className='inline-flex items-center justify-center w-12 h-12 rounded-2xl mb-4'
+                style={{
+                  background: 'linear-gradient(135deg, rgba(124,58,237,0.35), rgba(14,165,233,0.25))',
+                  border: '1px solid rgba(255,255,255,0.14)',
+                }}
+              >
+                <Sparkles className='w-5 h-5' style={{ color: '#c4b5fd' }} />
+              </div>
+              <h3 className='text-xl font-bold mb-2' style={{ color: '#f1f5f9' }}>
+                Liquid Glass Panel
+              </h3>
+              <p className='text-sm' style={{ color: 'rgba(148,163,184,0.7)' }}>
+                大面板变体，强度最高，启用动画，搭配紫色染色与外发光。
+                折射层会对背景渐变产生细微畸变，形成真实玻璃透镜感。
+              </p>
+            </div>
+          </LiquidGlass>
         </div>
       </section>
 
